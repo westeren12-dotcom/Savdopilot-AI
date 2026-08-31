@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.85rem;
+  --radius-lg: 1.15rem;
+  --radius-xl: 1.6rem;
+}
+
+:root {
+  --background: oklch(0.985 0.012 95);
+  --foreground: oklch(0.22 0.03 160);
+  --card: oklch(0.995 0.008 95);
+  --card-foreground: oklch(0.22 0.03 160);
+  --muted: oklch(0.96 0.014 150);
+  --muted-foreground: oklch(0.48 0.03 160);
+  --border: oklch(0.91 0.02 150);
+  --primary: oklch(0.42 0.1 162);
+  --primary-foreground: oklch(0.99 0.01 95);
+  --accent: oklch(0.78 0.12 75);
+  --accent-foreground: oklch(0.28 0.05 70);
+  --ring: oklch(0.42 0.1 162);
+  --destructive: oklch(0.6 0.18 25);
+}
+
+.dark {
+  --background: oklch(0.17 0.025 165);
+  --foreground: oklch(0.96 0.015 95);
+  --card: oklch(0.21 0.028 165);
+  --card-foreground: oklch(0.96 0.015 95);
+  --muted: oklch(0.26 0.03 165);
+  --muted-foreground: oklch(0.74 0.03 160);
+  --border: oklch(0.32 0.03 165);
+  --primary: oklch(0.78 0.12 162);
+  --primary-foreground: oklch(0.16 0.03 165);
+  --accent: oklch(0.82 0.13 80);
+  --accent-foreground: oklch(0.2 0.04 80);
+  --ring: oklch(0.78 0.12 162);
+  --destructive: oklch(0.7 0.16 25);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.mesh {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, oklch(0.78 0.12 162 / 0.18), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, oklch(0.82 0.13 80 / 0.16), transparent 50%);
+}
+
+.dark .mesh {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, oklch(0.78 0.12 162 / 0.12), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, oklch(0.82 0.13 80 / 0.10), transparent 50%);
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition-property: color, background-color, border-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Button and input focus styles */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Card hover effects */
+.card {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 300ms ease-out;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

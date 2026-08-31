@@ -1,0 +1,40 @@
+import type {
+  AppNotification,
+  Business,
+  Category,
+  Conversation,
+  Customer,
+  Integration,
+  Message,
+  Order,
+  PaymentRecord,
+  Product,
+  Profile,
+  Referral,
+  Subscription,
+  SupportTicket,
+  Transaction,
+} from '@/types'
+
+export interface AppState {
+  sessionUserId: string | null
+  profiles: Profile[]
+  passwords: Record<string, string>
+  businesses: Business[]
+  products: Product[]
+  categories: Category[]
+  customers: Customer[]
+  orders: Order[]
+  conversations: Conversation[]
+  messages: Message[]
+  transactions: Transaction[]
+  subscriptions: Subscription[]
+  payments: PaymentRecord[]
+  referrals: Referral[]
+  notifications: AppNotification[]
+  integrations: Integration[]
+  tickets: SupportTicket[]
+  aiUsed: Record<string, number>
+  extraCredits: Record<string, number>
+  creditPackPrices: { id: string; credits: number; price: number }[]
+}

@@ -1,0 +1,411 @@
+import type { AppState } from '@/store/state'
+import { CREDIT_PACKS } from '@/config/plans'
+import { addMonths, nowIso } from '@/lib/utils'
+
+const today = new Date()
+function daysAgo(n: number): string {
+  const d = new Date(today)
+  d.setDate(d.getDate() - n)
+  d.setHours(12, 0, 0, 0)
+  return d.toISOString()
+}
+
+export function createDemoState(): AppState {
+  const ownerId = 'usr_demo'
+  const adminId = 'usr_admin'
+  const bizId = 'biz_pepperoni'
+  const catPizza = 'cat_pizza'
+  const catDrink = 'cat_drink'
+  const p1 = 'prd_pep'
+  const p2 = 'prd_marg'
+  const p3 = 'prd_cola'
+  const c1 = 'cus_ali'
+  const c2 = 'cus_dilnoza'
+  const c3 = 'cus_javlon'
+  const start = daysAgo(20)
+
+  return {
+    sessionUserId: null,
+    passwords: {
+      [ownerId]: 'demo1234',
+      [adminId]: 'admin1234',
+    },
+    profiles: [
+      {
+        id: ownerId,
+        email: 'demo@savdopilot.uz',
+        fullName: 'Aziz Karimov',
+        role: 'owner',
+        blocked: false,
+        referralCode: 'SAVDO-AB123',
+        createdAt: daysAgo(40),
+      },
+      {
+        id: adminId,
+        email: 'admin@savdopilot.uz',
+        fullName: 'SavdoPilot Admin',
+        role: 'admin',
+        blocked: false,
+        referralCode: 'SAVDO-ADM01',
+        createdAt: daysAgo(90),
+      },
+    ],
+    businesses: [
+      {
+        id: bizId,
+        ownerId,
+        name: 'Pepperoni House',
+        type: 'restaurant',
+        phone: '+998 90 123 45 67',
+        address: 'Toshkent, Yunusobod, Amir Temur 15',
+        workingHours: '10:00–23:00',
+        telegram: '@pepperoni_house',
+        instagram: '@pepperoni.house',
+        onboardingComplete: true,
+        aiPersona: 'Issiq, tez va aniq. Faqat menyudagi narxlarni ayt.',
+        aiWelcome: 'Assalomu alaykum! Pepperoni House. Pitsa yoki ichimlik buyurtma qilasizmi?',
+        aiLanguage: 'uz',
+        createdAt: daysAgo(40),
+      },
+    ],
+    categories: [
+      { id: catPizza, businessId: bizId, name: 'Pitsa' },
+      { id: catDrink, businessId: bizId, name: 'Ichimliklar' },
+    ],
+    products: [
+      {
+        id: p1,
+        businessId: bizId,
+        categoryId: catPizza,
+        name: 'Pepperoni',
+        price: 89_000,
+        cost: 38_000,
+        stock: 12,
+        minStock: 15,
+        description: 'Klassik pepperoni, mozzarella va pomidor sousi. 30 sm.',
+        active: true,
+      },
+      {
+        id: p2,
+        businessId: bizId,
+        categoryId: catPizza,
+        name: 'Margarita',
+        price: 69_000,
+        cost: 28_000,
+        stock: 40,
+        minStock: 10,
+        description: 'Pomidor, mozzarella, reyhan. 30 sm.',
+        active: true,
+      },
+      {
+        id: p3,
+        businessId: bizId,
+        categoryId: catDrink,
+        name: 'Cola 0.5',
+        price: 12_000,
+        cost: 6_000,
+        stock: 80,
+        minStock: 20,
+        description: 'Sovuq Coca-Cola 0.5 L.',
+        active: true,
+      },
+    ],
+    customers: [
+      {
+        id: c1,
+        businessId: bizId,
+        name: 'Ali Valiyev',
+        phone: '+998 91 111 22 33',
+        telegram: '@ali_v',
+        status: 'vip',
+        lastOrderAt: daysAgo(0),
+      },
+      {
+        id: c2,
+        businessId: bizId,
+        name: 'Dilnoza Saidova',
+        phone: '+998 93 222 33 44',
+        instagram: '@dilnoza',
+        status: 'active',
+        lastOrderAt: daysAgo(1),
+      },
+      {
+        id: c3,
+        businessId: bizId,
+        name: 'Javlon Rustamov',
+        phone: '+998 97 555 66 77',
+        status: 'new',
+        lastOrderAt: daysAgo(5),
+      },
+    ],
+    orders: [
+      {
+        id: 'ord_1',
+        businessId: bizId,
+        customerId: c1,
+        status: 'delivered',
+        delivery: true,
+        deliveryFee: 10_000,
+        createdAt: daysAgo(0),
+        items: [
+          {
+            id: 'oi_1',
+            orderId: 'ord_1',
+            productId: p1,
+            productName: 'Pepperoni',
+            quantity: 2,
+            unitPrice: 89_000,
+            cost: 38_000,
+          },
+        ],
+      },
+      {
+        id: 'ord_2',
+        businessId: bizId,
+        customerId: c2,
+        status: 'preparing',
+        delivery: true,
+        deliveryFee: 10_000,
+        createdAt: daysAgo(0),
+        items: [
+          {
+            id: 'oi_2',
+            orderId: 'ord_2',
+            productId: p2,
+            productName: 'Margarita',
+            quantity: 1,
+            unitPrice: 69_000,
+            cost: 28_000,
+          },
+          {
+            id: 'oi_3',
+            orderId: 'ord_2',
+            productId: p3,
+            productName: 'Cola 0.5',
+            quantity: 2,
+            unitPrice: 12_000,
+            cost: 6_000,
+          },
+        ],
+      },
+      {
+        id: 'ord_3',
+        businessId: bizId,
+        customerId: c3,
+        status: 'new',
+        delivery: false,
+        deliveryFee: 0,
+        createdAt: daysAgo(0),
+        items: [
+          {
+            id: 'oi_4',
+            orderId: 'ord_3',
+            productId: p1,
+            productName: 'Pepperoni',
+            quantity: 1,
+            unitPrice: 89_000,
+            cost: 38_000,
+          },
+        ],
+      },
+      {
+        id: 'ord_4',
+        businessId: bizId,
+        customerId: c1,
+        status: 'delivered',
+        delivery: true,
+        deliveryFee: 10_000,
+        createdAt: daysAgo(1),
+        items: [
+          {
+            id: 'oi_5',
+            orderId: 'ord_4',
+            productId: p1,
+            productName: 'Pepperoni',
+            quantity: 1,
+            unitPrice: 89_000,
+            cost: 38_000,
+          },
+        ],
+      },
+    ],
+    conversations: [
+      {
+        id: 'cnv_1',
+        businessId: bizId,
+        customerId: c1,
+        customerName: 'Ali Valiyev',
+        channel: 'telegram',
+        status: 'ai',
+        lastMessageAt: daysAgo(0),
+      },
+      {
+        id: 'cnv_2',
+        businessId: bizId,
+        customerId: c2,
+        customerName: 'Dilnoza Saidova',
+        channel: 'instagram',
+        status: 'human',
+        lastMessageAt: daysAgo(0),
+      },
+    ],
+    messages: [
+      {
+        id: 'msg_1',
+        conversationId: 'cnv_1',
+        role: 'customer',
+        content: 'Pepperoni qancha turadi?',
+        createdAt: daysAgo(0),
+      },
+      {
+        id: 'msg_2',
+        conversationId: 'cnv_1',
+        role: 'ai',
+        content: 'Pepperoni narxi 89 000 so‘m.',
+        createdAt: daysAgo(0),
+      },
+      {
+        id: 'msg_3',
+        conversationId: 'cnv_2',
+        role: 'customer',
+        content: 'Yetkazib berish bormi?',
+        createdAt: daysAgo(0),
+      },
+      {
+        id: 'msg_4',
+        conversationId: 'cnv_2',
+        role: 'human',
+        content: 'Ha, Toshkent bo‘ylab 10 000 so‘m.',
+        createdAt: daysAgo(0),
+      },
+    ],
+    transactions: [
+      {
+        id: 'tx_1',
+        businessId: bizId,
+        type: 'income',
+        category: 'orders',
+        amount: 188_000,
+        note: 'Buyurtma ord_1',
+        createdAt: daysAgo(0),
+      },
+      {
+        id: 'tx_2',
+        businessId: bizId,
+        type: 'income',
+        category: 'orders',
+        amount: 103_000,
+        note: 'Buyurtma ord_2',
+        createdAt: daysAgo(0),
+      },
+      {
+        id: 'tx_3',
+        businessId: bizId,
+        type: 'expense',
+        category: 'product',
+        amount: 120_000,
+        note: 'Un va sous',
+        createdAt: daysAgo(0),
+      },
+      {
+        id: 'tx_4',
+        businessId: bizId,
+        type: 'expense',
+        category: 'rent',
+        amount: 8_000_000,
+        note: 'Oylik ijara',
+        createdAt: daysAgo(12),
+      },
+      {
+        id: 'tx_5',
+        businessId: bizId,
+        type: 'expense',
+        category: 'ads',
+        amount: 450_000,
+        note: 'Instagram reklama',
+        createdAt: daysAgo(3),
+      },
+    ],
+    subscriptions: [
+      {
+        id: 'sub_1',
+        businessId: bizId,
+        planCode: 'pro',
+        cycle: 'monthly',
+        startAt: start,
+        endAt: addMonths(start, 1),
+        bonusDays: 0,
+        autoRenew: true,
+      },
+    ],
+    payments: [
+      {
+        id: 'pay_1',
+        businessId: bizId,
+        provider: 'mock',
+        amount: 149_000,
+        status: 'paid',
+        description: 'PRO monthly',
+        createdAt: start,
+      },
+    ],
+    referrals: [
+      {
+        id: 'ref_1',
+        ownerUserId: ownerId,
+        invitedEmail: 'nodira@example.com',
+        status: 'success',
+        bonusDays: 15,
+        createdAt: daysAgo(10),
+      },
+    ],
+    notifications: [
+      {
+        id: 'nt_1',
+        userId: ownerId,
+        kind: 'stock',
+        title: '⚠️ Stock tugashiga yaqin',
+        body: 'Pepperoni qoldig‘i 12 (min 15)',
+        read: false,
+        createdAt: nowIso(),
+      },
+      {
+        id: 'nt_2',
+        userId: ownerId,
+        kind: 'order',
+        title: 'Yangi buyurtma',
+        body: 'Pepperoni ×1 — Javlon Rustamov',
+        read: false,
+        createdAt: nowIso(),
+      },
+    ],
+    integrations: [
+      {
+        id: 'int_tg',
+        businessId: bizId,
+        provider: 'telegram',
+        status: 'connected',
+        botUsername: '@pepperoni_house_bot',
+      },
+      {
+        id: 'int_ig',
+        businessId: bizId,
+        provider: 'instagram',
+        status: 'disconnected',
+      },
+    ],
+    tickets: [
+      {
+        id: 'tkt_1',
+        userId: ownerId,
+        subject: 'Instagram ulash',
+        body: 'Meta App review qachon?',
+        status: 'open',
+        createdAt: daysAgo(2),
+      },
+    ],
+    aiUsed: { [bizId]: 1350 },
+    extraCredits: { [bizId]: 0 },
+    creditPackPrices: CREDIT_PACKS.map((p) => ({ ...p })),
+  }
+}
