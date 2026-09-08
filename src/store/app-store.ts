@@ -9,9 +9,11 @@ import type {
   BillingCycle,
   Business,
   Category,
+  CollectionFollowup,
   Conversation,
   Customer,
   Integration,
+  Invoice,
   Message,
   Order,
   OrderStatus,
@@ -724,6 +726,37 @@ export const actions = {
     patch({
       tickets: state.tickets.map((t) => (t.id === id ? { ...t, status } : t)),
     })
+  },
+
+  addInvoice(invoice: Omit<Invoice, 'id' | 'businessId' | 'createdAt'>) {
+    const biz = currentBusiness()
+    if (!biz) throw new Error('Biznes yo‘q')
+    const newInvoice: Invoice = {
+      ...invoice,
+      id: uid('inv'),
+      businessId: biz.id,
+      createdAt: nowIso(),
+    }
+    patch({ invoices: [newInvoice, ...state.invoices] })
+    return newInvoice
+  },
+
+  updateInvoiceStatus(invoiceId: string, status: Invoice['status']) {
+    patch({
+      invoices: state.invoices.map((inv) =>
+        inv.id === invoiceId ? { ...inv, status } : inv,
+      ),
+    })
+  },
+
+  addFollowup(followup: Omit<CollectionFollowup, 'id' | 'sentAt'>) {
+    const newFollowup: CollectionFollowup = {
+      ...followup,
+      id: uid('fol'),
+      sentAt: nowIso(),
+    }
+    patch({ followups: [newFollowup, ...state.followups] })
+    return newFollowup
   },
 
   resetDemo() {

@@ -20,6 +20,7 @@ import { ReferralsPage } from '@/features/referrals/referrals-page'
 import { NotificationsPage } from '@/features/notifications/notifications-page'
 import { SettingsPage } from '@/features/settings/settings-page'
 import { AdminPage } from '@/features/admin/admin-page'
+import { InvoiceCollectionsPage } from '@/features/invoice-collections/invoice-collections-page'
 
 function App() {
   return (
@@ -81,6 +82,7 @@ function AppRoutes() {
       <Route path="customers" element={<CustomersPage />} />
       <Route path="inventory" element={<InventoryPage />} />
       <Route path="finance" element={<FinancePage />} />
+      <Route path="collections" element={<InvoiceCollectionsPage />} />
       <Route path="insights" element={<InsightsPage />} />
       <Route path="integrations" element={<IntegrationsPage />} />
       <Route path="voice" element={<VoicePage />} />

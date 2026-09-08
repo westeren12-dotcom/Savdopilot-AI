@@ -2,9 +2,11 @@ import type {
   AppNotification,
   Business,
   Category,
+  CollectionFollowup,
   Conversation,
   Customer,
   Integration,
+  Invoice,
   Message,
   Order,
   PaymentRecord,
@@ -34,6 +36,8 @@ export interface AppState {
   notifications: AppNotification[]
   integrations: Integration[]
   tickets: SupportTicket[]
+  invoices: Invoice[]
+  followups: CollectionFollowup[]
   aiUsed: Record<string, number>
   extraCredits: Record<string, number>
   creditPackPrices: { id: string; credits: number; price: number }[]

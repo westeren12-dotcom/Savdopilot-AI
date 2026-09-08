@@ -5,8 +5,9 @@ import { Input, Label } from '@/components/ui/input'
 import { useSession } from '@/hooks/use-session'
 import { actions } from '@/store/app-store'
 import { formatSom } from '@/lib/utils'
-import { Wallet, TrendingUp, TrendingDown, Plus } from 'lucide-react'
+import { Wallet, TrendingUp, TrendingDown, Plus, FileText, DollarSign } from 'lucide-react'
 import type { TransactionType, ExpenseCategory } from '@/types'
+import { Link } from 'react-router-dom'
 
 export function FinancePage() {
   const { business, state } = useSession()
@@ -142,6 +143,37 @@ export function FinancePage() {
           <p className="mt-2 font-display text-xl">{profitMargin}%</p>
         </Card>
       </div>
+
+      {/* Collections Quick Access */}
+      <Card className="border-primary/20 bg-primary/5">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <FileText className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-lg">Invoice Collections</h2>
+              <p className="text-sm text-muted-foreground">AI-powered invoice tracking and follow-ups</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="text-right">
+              <p className="text-sm text-muted-foreground">Total Outstanding</p>
+              <p className="text-lg font-semibold">$48,200</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-muted-foreground">AI Recovered</p>
+              <p className="text-lg font-semibold text-green-500">$8,700</p>
+            </div>
+            <Button asChild>
+              <Link to="/app/collections">
+                Open Collections
+                <DollarSign className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </Card>
 
       <Card>
         <h2 className="p-4 font-semibold">Tranzaksiyalar</h2>

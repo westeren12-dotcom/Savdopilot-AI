@@ -36,6 +36,13 @@ export type NotificationKind =
   | 'payment'
   | 'referral'
   | 'system'
+  | 'invoice'
+  | 'collection'
+
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'partial'
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded'
+export type CollectionStatus = 'active' | 'promise' | 'dispute' | 'paid' | 'lost'
+export type AIResponseIntent = 'payment_promise' | 'payment_difficulty' | 'paid' | 'unknown'
 
 export interface Profile {
   id: string
@@ -246,4 +253,84 @@ export interface AiInsight {
   title: string
   body: string
   tone: 'up' | 'warn' | 'info'
+}
+
+// Invoice Collections Types
+export interface Invoice {
+  id: string
+  businessId: string
+  clientId: string
+  clientName: string
+  clientEmail: string
+  invoiceNumber: string
+  amount: number
+  currency: 'USD' | 'UZS' | 'EUR'
+  dueDate: string
+  status: InvoiceStatus
+  items: InvoiceItem[]
+  paymentPromise?: string
+  paymentPlan?: PaymentPlan
+  daysOverdue?: number
+  totalPaid?: number
+  createdAt: string
+  paidAt?: string
+}
+
+export interface InvoiceItem {
+  id: string
+  description: string
+  quantity: number
+  unitPrice: number
+  total: number
+}
+
+export interface PaymentPlan {
+  id: string
+  invoiceId: string
+  totalAmount: number
+  status: 'pending' | 'active' | 'completed' | 'cancelled'
+  installments: PaymentInstallment[]
+  createdAt: string
+}
+
+export interface PaymentInstallment {
+  id: string
+  amount: number
+  dueDate: string
+  status: PaymentStatus
+  paidAt?: string
+}
+
+export interface CollectionFollowup {
+  id: string
+  invoiceId: string
+  type: 'email' | 'whatsapp' | 'sms'
+  status: 'sent' | 'delivered' | 'opened' | 'replied' | 'failed'
+  content: string
+  sentAt: string
+  aiIntent?: AIResponseIntent
+  responseAnalysis?: AIResponseAnalysis
+}
+
+export interface AIResponseAnalysis {
+  id: string
+  followupId: string
+  originalResponse: string
+  intent: AIResponseIntent
+  confidence: number
+  extractedDate?: string
+  extractedAmount?: number
+  needsPaymentPlan: boolean
+  sentiment: 'positive' | 'neutral' | 'negative'
+  analyzedAt: string
+}
+
+export interface CollectionsMetrics {
+  totalOutstanding: number
+  overdueAmount: number
+  aiRecovered: number
+  promisePayments: number
+  activeCollections: number
+  recoveryRate: number
+  avgCollectionDays: number
 }

@@ -19,6 +19,7 @@ import {
   Share2,
   Plug,
   Mic,
+  FileText,
 } from 'lucide-react'
 import { useSession } from '@/hooks/use-session'
 import { useTheme } from '@/components/theme-provider'
@@ -34,6 +35,7 @@ const nav = [
   { to: '/app/customers', label: 'CRM', icon: Users },
   { to: '/app/inventory', label: 'Ombor', icon: Boxes },
   { to: '/app/finance', label: 'Moliya', icon: Wallet },
+  { to: '/app/collections', label: 'Collections', icon: FileText },
   { to: '/app/insights', label: 'AI Insights', icon: Sparkles },
   { to: '/app/integrations', label: 'Integratsiyalar', icon: Plug },
   { to: '/app/voice', label: 'Voice AI', icon: Mic },
