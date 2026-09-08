@@ -80,14 +80,14 @@ body {
 
 .mesh {
   background:
-    radial-gradient(1200px 600px at 10% -10%, oklch(0.78 0.12 162 / 0.18), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, oklch(0.82 0.13 80 / 0.16), transparent 50%);
+    radial-gradient(1200px 600px at 10% -10%, oklch(0.78 0.12 162 / 0.08), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, oklch(0.82 0.13 80 / 0.06), transparent 50%);
 }
 
 .dark .mesh {
   background:
-    radial-gradient(1200px 600px at 10% -10%, oklch(0.78 0.12 162 / 0.12), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, oklch(0.82 0.13 80 / 0.10), transparent 50%);
+    radial-gradient(1200px 600px at 10% -10%, oklch(0.78 0.12 162 / 0.05), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, oklch(0.82 0.13 80 / 0.04), transparent 50%);
 }
 
 /* Smooth transitions for theme switching */

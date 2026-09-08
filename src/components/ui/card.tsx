@@ -14,7 +14,9 @@ export function Badge({
   className,
   tone = 'muted',
   ...props
-}: HTMLAttributes<HTMLSpanElement> & { tone?: 'muted' | 'gold' | 'ok' | 'warn' | 'danger' }) {
+}: HTMLAttributes<HTMLSpanElement> & { 
+  tone?: 'muted' | 'gold' | 'ok' | 'warn' | 'danger'
+}) {
   const tones = {
     muted: 'bg-muted text-muted-foreground',
     gold: 'bg-accent/30 text-accent-foreground',
@@ -22,6 +24,7 @@ export function Badge({
     warn: 'bg-accent/40 text-accent-foreground',
     danger: 'bg-destructive/15 text-destructive',
   }
+  
   return (
     <span
       className={cn(

@@ -11,14 +11,68 @@ import {
   Sparkles,
   Store,
   Wallet,
+  User,
+  CheckCircle,
+  Globe,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge, Card } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { FEATURES, PLAN_PRICES } from '@/config/plans'
-import { formatSom } from '@/lib/utils'
+import { formatSom, cn } from '@/lib/utils'
 import { useState } from 'react'
 
-const fade = { initial: { opacity: 0, y: 16 }, whileInView: { opacity: 1, y: 0 } }
+type Language = 'en' | 'ru' | 'uz'
+
+const content = {
+  en: {
+    badge: "AI-Powered Sales Assistant",
+    headline: "Turn Every Customer Conversation Into a Sale",
+    subheading: "SavdoPilot AI answers customers, takes orders and helps your business sell more — automatically.",
+    ctaPrimary: "Start Free",
+    ctaSecondary: "Watch Demo",
+    trust: ["AI Sales", "CRM", "Orders", "Analytics"],
+    chat: {
+      customer1: "2 ta Pepperoni pizza kerak",
+      ai1: "Albatta! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
+      customer2: "Yetkazib berish bormi?",
+      ai2: "Ha, yetkazib beramiz.\nManzilingizni yuboring.",
+      success1: "Order confirmed",
+      success2: "Customer added to CRM",
+    },
+  },
+  ru: {
+    badge: "AI-помощник продаж",
+    headline: "Превратите каждый разговор с клиентом в продажу",
+    subheading: "SavdoPilot AI отвечает клиентам, принимает заказы и помогает вашему бизнесу продавать больше — автоматически.",
+    ctaPrimary: "Начать бесплатно",
+    ctaSecondary: "Смотреть демо",
+    trust: ["AI Продажи", "CRM", "Заказы", "Аналитика"],
+    chat: {
+      customer1: "2 пиццы Pepperoni нужно",
+      ai1: "Конечно! 🍕\n2 × Пицца Pepperoni\n120,000 сум",
+      customer2: "Есть доставка?",
+      ai2: "Да, доставляем.\nОтправьте ваш адрес.",
+      success1: "Заказ подтвержден",
+      success2: "Клиент добавлен в CRM",
+    },
+  },
+  uz: {
+    badge: "AI-Powered Sales Assistant",
+    headline: "Har bir mijoz suhbatini savdoga aylantiring",
+    subheading: "SavdoPilot AI mijozlarga javob beradi, buyurtmalarni qabul qiladi va biznesingiz ko'proq savdo qilishiga yordam beradi — avtomatik ravishda.",
+    ctaPrimary: "Bepul boshlash",
+    ctaSecondary: "Demo ko'rish",
+    trust: ["AI Savdo", "CRM", "Buyurtmalar", "Analitika"],
+    chat: {
+      customer1: "2 ta Pepperoni pizza kerak",
+      ai1: "Albatta! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
+      customer2: "Yetkazib berish bormi?",
+      ai2: "Ha, yetkazib beramiz.\nManzilingizni yuboring.",
+      success1: "Buyurtma tasdiqlandi",
+      success2: "Mijoz CRMga qo'shildi",
+    },
+  },
+}
 
 const faqs = [
   {
@@ -55,6 +109,8 @@ const testimonials = [
 ]
 
 export function LandingPage() {
+  const [language, setLanguage] = useState<Language>('en')
+  const t = content[language]
   return (
     <div className="mesh min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
@@ -62,6 +118,21 @@ export function LandingPage() {
           SavdoPilot AI
         </Link>
         <div className="flex items-center gap-2">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative"
+          >
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLanguage(language === 'en' ? 'ru' : language === 'ru' ? 'uz' : 'en')}
+              className="flex items-center gap-2"
+            >
+              <Globe className="h-4 w-4" />
+              {language.toUpperCase()}
+            </Button>
+          </motion.div>
           <Button variant="ghost" asChild>
             <Link to="/login">Kirish</Link>
           </Button>
@@ -71,27 +142,200 @@ export function LandingPage() {
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-4 pb-20 pt-10 text-center">
-        <motion.div {...fade} className="mx-auto max-w-3xl">
-          <Badge tone="gold">O‘zbekiston bizneslari uchun</Badge>
-          <h1 className="font-display mt-5 text-4xl leading-tight md:text-6xl">
-            Biznesingizni AI bilan avtomatlashtiring
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            AI-Sotuvchi mijozlaringizga javob beradi, buyurtmalarni qabul qiladi, SavdoPilot esa
-            butun biznesingizni boshqarishga yordam beradi.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button size="lg" asChild>
-              <Link to="/register">
-                7 kun bepul sinab ko‘rish <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/login">Demo ko‘rish</Link>
-            </Button>
-          </div>
-        </motion.div>
+      <section className="mx-auto max-w-7xl px-4 pb-32 pt-20">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          {/* Left side - Content */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl"
+          >
+            <div className="mb-6 inline-flex items-center rounded-full border border-input bg-background px-3 py-1 text-sm">
+              <Sparkles className="h-3 w-3 mr-2 text-primary" />
+              {t.badge}
+            </div>
+            
+            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold leading-tight tracking-tight">
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                {t.headline}
+              </motion.span>
+            </h1>
+            
+            <p className="mt-6 text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed">
+              {t.subheading}
+            </p>
+            
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Button size="lg" className="text-base" asChild>
+                  <Link to="/register">
+                    {t.ctaPrimary} <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Button size="lg" variant="outline" className="text-base" asChild>
+                  <Link to="/login">
+                    {t.ctaSecondary}
+                  </Link>
+                </Button>
+              </motion.div>
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center gap-4 md:gap-6 text-sm text-muted-foreground">
+              {t.trust.map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right side - AI Chat Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative order-first lg:order-last"
+          >
+            <motion.div
+              animate={{
+                y: [0, -10, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }}
+              className="relative"
+            >
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl opacity-50" />
+              
+              {/* Main card */}
+              <Card className="relative bg-card border-2 p-4 md:p-6 shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center gap-3 pb-4 border-b">
+                  <div className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-primary/10">
+                    <Bot className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm md:text-base">SavdoPilot AI</h3>
+                    <p className="text-xs text-muted-foreground">Sales Assistant</p>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="inline-flex items-center rounded-full border border-input bg-background px-2 py-0.5 text-xs font-semibold">
+                      Active
+                    </div>
+                  </div>
+                </div>
+
+                {/* Chat messages */}
+                <div className="mt-4 space-y-3 md:space-y-4">
+                  {/* Customer message */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="flex gap-2 md:gap-3"
+                  >
+                    <div className="flex h-7 w-7 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-muted">
+                      <User className="h-3 w-3 md:h-4 md:w-4" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="rounded-lg bg-muted p-2 md:p-3 text-xs md:text-sm">
+                        {t.chat.customer1}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* AI response */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex gap-2 md:gap-3"
+                  >
+                    <div className="flex h-7 w-7 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                      <Bot className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="rounded-lg bg-primary/10 p-2 md:p-3 text-xs md:text-sm">
+                        {t.chat.ai1}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Customer message */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="flex gap-2 md:gap-3"
+                  >
+                    <div className="flex h-7 w-7 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-muted">
+                      <User className="h-3 w-3 md:h-4 md:w-4" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="rounded-lg bg-muted p-2 md:p-3 text-xs md:text-sm">
+                        {t.chat.customer2}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* AI response */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="flex gap-2 md:gap-3"
+                  >
+                    <div className="flex h-7 w-7 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                      <Bot className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="rounded-lg bg-primary/10 p-2 md:p-3 text-xs md:text-sm">
+                        {t.chat.ai2}
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Success indicator */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="mt-3 md:mt-4 pt-3 md:pt-4 border-t"
+                >
+                  <div className="flex items-center gap-2 text-xs md:text-sm">
+                    <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+                    <span className="text-muted-foreground">{t.chat.success1}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs md:text-sm mt-1">
+                    <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+                    <span className="text-muted-foreground">{t.chat.success2}</span>
+                  </div>
+                </motion.div>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16">
@@ -253,7 +497,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 function cnRotate(open: boolean) {
-  return open ? 'h-4 w-4 rotate-180' : 'h-4 w-4'
+  return cn('h-4 w-4', open && 'rotate-180')
 }
 
 export function PricingBlock() {
@@ -264,9 +508,9 @@ export function PricingBlock() {
         {(['free', 'pro', 'premium'] as const).map((code) => (
           <Card key={code} className={code === 'premium' ? 'ring-2 ring-accent' : ''}>
             {code === 'premium' && (
-              <Badge tone="gold" className="mb-2">
+              <div className="mb-2 inline-flex items-center rounded-full bg-accent/30 px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
                 Eng yaxshi qiymat — 12 oy
-              </Badge>
+              </div>
             )}
             <h3 className="font-display text-2xl uppercase">{code}</h3>
             <p className="mt-2 font-display text-3xl">{formatSom(PLAN_PRICES[code])}</p>
