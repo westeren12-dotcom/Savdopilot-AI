@@ -32,13 +32,18 @@ const content = {
     ctaSecondary: "Watch Demo",
     trust: ["AI Sales", "CRM", "Orders", "Analytics"],
     chat: {
-      customer1: "2 ta Pepperoni pizza kerak",
-      ai1: "Albatta! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
-      customer2: "Yetkazib berish bormi?",
-      ai2: "Ha, yetkazib beramiz.\nManzilingizni yuboring.",
+      customer1: "2 Pepperoni pizzas please",
+      ai1: "Sure! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
+      customer2: "Do you deliver?",
+      ai2: "Yes, we deliver. Send your address.",
       success1: "Order confirmed",
       success2: "Customer added to CRM",
     },
+    testimonials: [
+      { name: 'Malika, online shop', text: 'Orders are accepted even at night. I confirm them in the morning.' },
+      { name: 'Sardor, barbershop', text: 'Bookings are collected in Telegram. Every customer is visible in CRM.' },
+      { name: 'Nodira, education center', text: 'Prices and class times are mentioned exactly as we wrote — no confusion.' },
+    ],
   },
   ru: {
     badge: "AI-помощник продаж",
@@ -48,13 +53,18 @@ const content = {
     ctaSecondary: "Смотреть демо",
     trust: ["AI Продажи", "CRM", "Заказы", "Аналитика"],
     chat: {
-      customer1: "2 пиццы Pepperoni нужно",
+      customer1: "2 пиццы Pepperoni пожалуйста",
       ai1: "Конечно! 🍕\n2 × Пицца Pepperoni\n120,000 сум",
       customer2: "Есть доставка?",
-      ai2: "Да, доставляем.\nОтправьте ваш адрес.",
+      ai2: "Да, доставляем. Отправьте ваш адрес.",
       success1: "Заказ подтвержден",
       success2: "Клиент добавлен в CRM",
     },
+    testimonials: [
+      { name: 'Малика, онлайн магазин', text: 'Заказы принимаются даже ночью. Я подтверждаю их утром.' },
+      { name: 'Сардор, барбершоп', text: 'Бронирования собираются в Telegram. Каждый клиент виден в CRM.' },
+      { name: 'Нодира, учебный центр', text: 'Цены и время занятий указаны так, как мы написали — нет путаницы.' },
+    ],
   },
   uz: {
     badge: "AI-Powered Sales Assistant",
@@ -67,10 +77,15 @@ const content = {
       customer1: "2 ta Pepperoni pizza kerak",
       ai1: "Albatta! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
       customer2: "Yetkazib berish bormi?",
-      ai2: "Ha, yetkazib beramiz.\nManzilingizni yuboring.",
+      ai2: "Ha, yetkazib beramiz. Manzilingizni yuboring.",
       success1: "Buyurtma tasdiqlandi",
       success2: "Mijoz CRMga qo'shildi",
     },
+    testimonials: [
+      { name: 'Malika, online shop', text: 'Kechasi ham buyurtmalar qabul qilinadi. Men ertalab tasdiqlayman.' },
+      { name: 'Sardor, barbershop', text: 'Bronlar Telegramda yig‘iladi. CRM’da har bir mijoz ko‘rinadi.' },
+      { name: 'Nodira, o‘quv markazi', text: 'Narx va dars vaqti faqat biz yozganidek aytiladi — chalkashlik yo‘q.' },
+    ],
   },
 }
 
@@ -93,23 +108,8 @@ const faqs = [
   },
 ]
 
-const testimonials = [
-  {
-    name: 'Malika, online shop',
-    text: 'Kechasi ham buyurtmalar qabul qilinadi. Men ertalab tasdiqlayman.',
-  },
-  {
-    name: 'Sardor, barbershop',
-    text: 'Bronlar Telegramda yig‘iladi. CRM’da har bir mijoz ko‘rinadi.',
-  },
-  {
-    name: 'Nodira, o‘quv markazi',
-    text: 'Narx va dars vaqti faqat biz yozganidek aytiladi — chalkashlik yo‘q.',
-  },
-]
-
 export function LandingPage() {
-  const [language, setLanguage] = useState<Language>('en')
+  const [language, setLanguage] = useState<Language>('uz')
   const t = content[language]
   return (
     <div className="mesh min-h-screen">
@@ -450,7 +450,7 @@ export function LandingPage() {
       <section className="mx-auto max-w-6xl px-4 py-16">
         <h2 className="font-display text-3xl">Mijozlar nima deydi</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {testimonials.map((t) => (
+          {t.testimonials.map((t) => (
             <Card key={t.name}>
               <p className="text-sm">“{t.text}”</p>
               <p className="mt-3 text-xs text-muted-foreground">{t.name}</p>
