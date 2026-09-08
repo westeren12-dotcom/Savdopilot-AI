@@ -32,11 +32,11 @@ const content = {
     ctaSecondary: "Watch Demo",
     trust: ["AI Sales", "CRM", "Orders", "Analytics"],
     chat: {
-      customer1: "2 Pepperoni pizzas please",
-      ai1: "Sure! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
-      customer2: "Do you deliver?",
-      ai2: "Yes, we deliver. Send your address.",
-      success1: "Order confirmed",
+      customer1: "Looking for a 3-bedroom apartment in Chilonzor",
+      ai1: "We have 3-bedroom options in Chilonzor. What's your budget range?",
+      customer2: "Around $40,000-50,000",
+      ai2: "📍 Chilonzor-9, 3rd floor, 78m² — $45,000. Should I schedule a viewing for tomorrow at 3 PM?",
+      success1: "Viewing confirmed — tomorrow 3:00 PM",
       success2: "Customer added to CRM",
     },
     testimonials: [
@@ -53,11 +53,11 @@ const content = {
     ctaSecondary: "Смотреть демо",
     trust: ["AI Продажи", "CRM", "Заказы", "Аналитика"],
     chat: {
-      customer1: "2 пиццы Pepperoni пожалуйста",
-      ai1: "Конечно! 🍕\n2 × Пицца Pepperoni\n120,000 сум",
-      customer2: "Есть доставка?",
-      ai2: "Да, доставляем. Отправьте ваш адрес.",
-      success1: "Заказ подтвержден",
+      customer1: "Нужна 3-комнатная квартира в Чиланзаре",
+      ai1: "У нас есть 3-комнатные варианты в Чиланзаре. Какой у вас бюджет?",
+      customer2: "Примерно 40-50 тысяч долларов",
+      ai2: "📍 Чиланзар-9, 3-й этаж, 78м² — $45,000. Записать вас на просмотр завтра в 15:00?",
+      success1: "Просмотр подтверждён — завтра в 15:00",
       success2: "Клиент добавлен в CRM",
     },
     testimonials: [
@@ -74,11 +74,11 @@ const content = {
     ctaSecondary: "Demo ko'rish",
     trust: ["AI Savdo", "CRM", "Buyurtmalar", "Analitika"],
     chat: {
-      customer1: "2 ta Pepperoni pizza kerak",
-      ai1: "Albatta! 🍕\n2 × Pepperoni Pizza\n120,000 so'm",
-      customer2: "Yetkazib berish bormi?",
-      ai2: "Ha, yetkazib beramiz. Manzilingizni yuboring.",
-      success1: "Buyurtma tasdiqlandi",
+      customer1: "3 xonali kvartira kerak edi, Chilonzorda",
+      ai1: "Chilonzor tumanida 3 xonali variantlarimiz bor. Byudjetingiz taxminan qancha?",
+      customer2: "40-50 ming dollar atrofida",
+      ai2: "📍 Chilonzor-9, 3-qavat, 78m² — $45,000. Ertaga soat 15:00 ga ko'rishga yozib qo'yaymi?",
+      success1: "Ko'rish tasdiqlandi — ertaga 15:00",
       success2: "Mijoz CRMga qo'shildi",
     },
     testimonials: [
@@ -145,7 +145,7 @@ export function LandingPage() {
       <section className="mx-auto max-w-7xl px-4 pb-32 pt-20">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           {/* Left side - Content */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -155,7 +155,7 @@ export function LandingPage() {
               <Sparkles className="h-3 w-3 mr-2 text-primary" />
               {t.badge}
             </div>
-            
+
             <h1 className="font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold leading-tight tracking-tight">
               <motion.span
                 initial={{ opacity: 0, y: 20 }}
@@ -165,11 +165,11 @@ export function LandingPage() {
                 {t.headline}
               </motion.span>
             </h1>
-            
+
             <p className="mt-6 text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed">
               {t.subheading}
             </p>
-            
+
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -226,7 +226,7 @@ export function LandingPage() {
             >
               {/* Glow effect */}
               <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl opacity-50" />
-              
+
               {/* Main card */}
               <Card className="relative bg-card border-2 p-4 md:p-6 shadow-2xl">
                 {/* Header */}
