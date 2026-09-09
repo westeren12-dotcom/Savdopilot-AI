@@ -103,7 +103,7 @@ export function RegisterPage() {
           <Input value={businessType} onChange={(e) => setBusinessType(e.target.value)} required />
         </Field>
         <Field label="Referral kod (ixtiyoriy)">
-          <Input value={referralCode} onChange={(e) => setReferralCode(e.target.value)} placeholder="SAVDO-AB123" />
+          <Input value={referralCode} onChange={(e) => setReferralCode(e.target.value)} placeholder="AVEN-AB123" />
         </Field>
         <Button className="w-full" type="submit">
           Davom etish
@@ -143,7 +143,7 @@ function AuthFrame({ title, children }: { title: string; children: ReactNode }) 
     <div className="mesh grid min-h-screen place-items-center px-4">
       <Card className="w-full max-w-md">
         <Link to="/" className="font-display text-xl">
-          SavdoPilot
+          AventryX
         </Link>
         <h1 className="mt-4 font-display text-3xl">{title}</h1>
         <div className="mt-6">{children}</div>

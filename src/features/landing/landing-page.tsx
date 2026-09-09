@@ -30,7 +30,7 @@ const content = {
   en: {
     badge: "AI-Powered Business Platform",
     headline: "Sell more. Manage customers. Get paid faster.",
-    subheading: "SavdoPilot AI helps you automate sales, manage customer relationships, and collect payments — all in one platform.",
+    subheading: "AventryX AI helps you automate sales, manage customer relationships, and collect payments — all in one platform.",
     ctaPrimary: "Start Free",
     ctaSecondary: "Watch Demo",
     automateQuestion: "What would you like to automate?",
@@ -68,7 +68,7 @@ const content = {
   ru: {
     badge: "AI-платформа для бизнеса",
     headline: "Продавайте больше. Управляйте клиентами. Получайте оплату быстрее.",
-    subheading: "SavdoPilot AI помогает автоматизировать продажи, управлять клиентами и собирать платежи — всё в одной платформе.",
+    subheading: "AventryX AI помогает автоматизировать продажи, управлять клиентами и собирать платежи — всё в одной платформе.",
     ctaPrimary: "Начать бесплатно",
     ctaSecondary: "Смотреть демо",
     automateQuestion: "Что вы хотите автоматизировать?",
@@ -106,7 +106,7 @@ const content = {
   uz: {
     badge: "AI-Powered Business Platform",
     headline: "Ko'proq savdo qiling. Mijozlarni boshqaring. To'lovni tez oling.",
-    subheading: "SavdoPilot AI savdolarni avtomatlashtirishga, mijozlarni boshqarishga va to'lovlarni yig'ishga yordam beradi — bitta platformada.",
+    subheading: "AventryX AI savdolarni avtomatlashtirishga, mijozlarni boshqarishga va to'lovlarni yig'ishga yordam beradi — bitta platformada.",
     ctaPrimary: "Bepul boshlash",
     ctaSecondary: "Demo ko'rish",
     automateQuestion: "Nimani avtomatlashtirmoqchisiz?",
@@ -169,7 +169,7 @@ export function LandingPage() {
     <div className="mesh min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
         <Link to="/" className="font-display text-xl">
-          SavdoPilot AI
+          AventryX AI
         </Link>
         <div className="flex items-center gap-2">
           <motion.div
@@ -349,7 +349,7 @@ export function LandingPage() {
                     <Bot className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-sm md:text-base">SavdoPilot AI</h3>
+                    <h3 className="font-semibold text-sm md:text-base">AventryX AI</h3>
                     <p className="text-xs text-muted-foreground">Sales Assistant</p>
                   </div>
                   <div className="ml-auto">
@@ -643,7 +643,7 @@ export function LandingPage() {
 
       <footer className="border-t px-4 py-10 text-sm text-muted-foreground">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} SavdoPilot AI</p>
+          <p>© {new Date().getFullYear()} AventryX AI</p>
           <div className="flex gap-4">
             <Link to="/pricing">Tariflar</Link>
             <Link to="/login">Kirish</Link>

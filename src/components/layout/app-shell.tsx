@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <BarChart3 className="h-4 w-4" />
           </span>
           <div>
-            <p className="font-display text-lg leading-none">SavdoPilot</p>
+            <p className="font-display text-lg leading-none">AventryX</p>
             <p className="text-[11px] text-muted-foreground">{business?.name ?? 'AI'}</p>
           </div>
         </Link>
@@ -119,7 +119,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
       <div className="flex min-h-screen flex-col">
         <header className="flex items-center justify-between border-b px-4 py-3 md:hidden">
-          <span className="font-display text-lg">SavdoPilot</span>
+          <span className="font-display text-lg">AventryX</span>
           <div className="flex gap-2">
             <Button variant="ghost" size="icon" asChild>
               <Link to="/app/ai">

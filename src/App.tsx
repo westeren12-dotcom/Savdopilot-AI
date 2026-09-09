@@ -107,7 +107,7 @@ function PricingPage() {
     <div className="mesh min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
         <a href="/" className="font-display text-xl">
-          SavdoPilot AI
+          AventryX AI
         </a>
         <div className="flex items-center gap-2">
           <a href="/login" className="text-sm text-muted-foreground hover:text-foreground">
@@ -121,7 +121,7 @@ function PricingPage() {
       </main>
       <footer className="border-t px-4 py-10 text-sm text-muted-foreground">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} SavdoPilot AI</p>
+          <p>© {new Date().getFullYear()} AventryX AI</p>
           <div className="flex gap-4">
             <a href="/pricing">Tariflar</a>
             <a href="/login">Kirish</a>

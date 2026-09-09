@@ -8,7 +8,7 @@ export const env = {
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL ?? '',
   supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY ?? '',
   appUrl: import.meta.env.VITE_APP_URL ?? 'http://localhost:5173',
-  appName: import.meta.env.VITE_APP_NAME ?? 'SavdoPilot AI',
+  appName: import.meta.env.VITE_APP_NAME ?? 'AventryX AI',
 } as const
 
 export function isSupabaseConfigured(): boolean {

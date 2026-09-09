@@ -60,7 +60,7 @@ export function referralCodeFromName(name: string): string {
     .toUpperCase()
     .padEnd(3, 'X')
   const n = Math.floor(100 + Math.random() * 900)
-  return `SAVDO-${slug}${n}`
+  return `AVEN-${slug}${n}`
 }
 
 export function formatTimeRelative(iso: string): string {
