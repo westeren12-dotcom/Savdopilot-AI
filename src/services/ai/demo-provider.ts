@@ -1,4 +1,5 @@
 import type { AiChatRequest, AiChatResult, AiProvider } from './types'
+import { AiBrain } from './ai-brain'
 
 const UNKNOWN =
   'Bu ma’lumotni biznes egasidan aniqlab berishimiz kerak.'
@@ -15,10 +16,41 @@ function findProduct(products: AiChatRequest['context']['products'], text: strin
 export const demoAiProvider: AiProvider = {
   async chat(request) {
     const last = request.messages.at(-1)?.content ?? ''
-    const { business, products } = request.context
+    const { business, products, invoices } = request.context
     const n = normalize(last)
     const result: AiChatResult = { text: '' }
 
+    // Handle different AI tasks
+    if (request.task === 'collections') {
+      // Collections-specific logic
+      if (invoices && invoices.length > 0) {
+        const overdueInvoice = invoices.find(inv => {
+          const dueDate = new Date(inv.dueDate)
+          const today = new Date()
+          return dueDate < today && inv.status !== 'paid'
+        })
+        
+        if (overdueInvoice) {
+          const daysOverdue = Math.floor((new Date().getTime() - new Date(overdueInvoice.dueDate).getTime()) / (1000 * 60 * 60 * 24))
+          result.text = AiBrain.generatePaymentReminder({
+            invoiceNumber: overdueInvoice.invoiceNumber,
+            amount: overdueInvoice.amount,
+            dueDate: overdueInvoice.dueDate,
+            customerName: overdueInvoice.clientName,
+            daysOverdue,
+          })
+          return result
+        }
+      }
+      
+      // Analyze payment response
+      const analysis = AiBrain.analyzePaymentResponse(last)
+      result.structuredResponse = analysis
+      result.text = `I understand: ${analysis.reasoning}. ${analysis.action === 'notify_business' ? 'I will notify the business owner.' : 'I will track this.'}`
+      return result
+    }
+
+    // Sales-specific logic (existing)
     if (/(salom|assalom|hello|hi)/.test(n)) {
       result.text =
         business.aiWelcome ||
@@ -97,5 +129,13 @@ export const demoAiProvider: AiProvider = {
 
     result.text = UNKNOWN
     return result
+  },
+  
+  analyzePaymentResponse(message: string) {
+    return AiBrain.analyzePaymentResponse(message)
+  },
+  
+  generatePaymentReminder(invoice) {
+    return AiBrain.generatePaymentReminder(invoice)
   },
 }

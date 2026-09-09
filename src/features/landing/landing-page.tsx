@@ -14,6 +14,9 @@ import {
   User,
   CheckCircle,
   Globe,
+  DollarSign,
+  FileText,
+  TrendingUp,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -25,12 +28,28 @@ type Language = 'en' | 'ru' | 'uz'
 
 const content = {
   en: {
-    badge: "AI-Powered Sales Assistant",
-    headline: "Turn Every Customer Conversation Into a Sale",
-    subheading: "SavdoPilot AI answers customers, takes orders and helps your business sell more — automatically.",
+    badge: "AI-Powered Business Platform",
+    headline: "Sell more. Manage customers. Get paid faster.",
+    subheading: "SavdoPilot AI helps you automate sales, manage customer relationships, and collect payments — all in one platform.",
     ctaPrimary: "Start Free",
     ctaSecondary: "Watch Demo",
-    trust: ["AI Sales", "CRM", "Orders", "Analytics"],
+    automateQuestion: "What would you like to automate?",
+    aiSales: {
+      title: "AI Sales",
+      subtitle: "Find customers, manage leads, automate follow-ups, and increase sales.",
+      features: ["AI Sales Assistant", "Lead Management", "Customer Management", "Sales Follow-ups", "Orders", "Sales Analytics"],
+      workflow: "Lead → Customer → Conversation → Order → Sale",
+    },
+    invoices: {
+      title: "Invoices & Collections",
+      subtitle: "Track invoices, automate payment reminders, and get paid faster.",
+      features: ["Invoice Manager", "Due-date Tracking", "Paid / Unpaid / Overdue", "AI Payment Reminders", "AI Response Understanding", "Payment Promise Tracking", "Collections Dashboard"],
+      workflow: "Invoice → Due Date → AI Follow-up → Customer Response → Payment",
+    },
+    dashboard: {
+      sales: { newLeads: 38, orders: 24, sales: "$4,820" },
+      collections: { outstanding: "$18,400", overdue: "$6,200", recovered: "$3,800" },
+    },
     chat: {
       customer1: "Looking for a 3-bedroom apartment in Chilonzor",
       ai1: "We have 3-bedroom options in Chilonzor. What's your budget range?",
@@ -47,12 +66,28 @@ const content = {
     ],
   },
   ru: {
-    badge: "AI-помощник продаж",
-    headline: "Превратите каждый разговор с клиентом в продажу",
-    subheading: "SavdoPilot AI отвечает клиентам, принимает заказы и помогает вашему бизнесу продавать больше — автоматически.",
+    badge: "AI-платформа для бизнеса",
+    headline: "Продавайте больше. Управляйте клиентами. Получайте оплату быстрее.",
+    subheading: "SavdoPilot AI помогает автоматизировать продажи, управлять клиентами и собирать платежи — всё в одной платформе.",
     ctaPrimary: "Начать бесплатно",
     ctaSecondary: "Смотреть демо",
-    trust: ["AI Продажи", "CRM", "Заказы", "Аналитика"],
+    automateQuestion: "Что вы хотите автоматизировать?",
+    aiSales: {
+      title: "AI Продажи",
+      subtitle: "Находите клиентов, управляйте лидами, автоматизируйтеFollow-ups и увеличивайте продажи.",
+      features: ["AI Ассистент продаж", "Управление лидами", "Управление клиентами", "Follow-ups продаж", "Заказы", "Аналитика продаж"],
+      workflow: "Лид → Клиент → Разговор → Заказ → Продажа",
+    },
+    invoices: {
+      title: "Счета и Кollections",
+      subtitle: "Отслеживайте счета, автоматизируйте напоминания об оплате и получайте оплату быстрее.",
+      features: ["Менеджер счетов", "Отслеживание сроков", "Оплачено / Неоплачено / Просрочено", "AI Напоминания об оплате", "AI Понимание ответов", "Отслеживание обещаний оплаты", "Dashboard Collections"],
+      workflow: "Счет → Срок оплаты → AI Follow-up → Ответ клиента → Оплата",
+    },
+    dashboard: {
+      sales: { newLeads: 38, orders: 24, sales: "$4,820" },
+      collections: { outstanding: "$18,400", overdue: "$6,200", recovered: "$3,800" },
+    },
     chat: {
       customer1: "Нужна 3-комнатная квартира в Чиланзаре",
       ai1: "У нас есть 3-комнатные варианты в Чиланзаре. Какой у вас бюджет?",
@@ -69,12 +104,28 @@ const content = {
     ],
   },
   uz: {
-    badge: "AI-Powered Sales Assistant",
-    headline: "Har bir mijoz suhbatini savdoga aylantiring",
-    subheading: "SavdoPilot AI mijozlarga javob beradi, buyurtmalarni qabul qiladi va biznesingiz ko'proq savdo qilishiga yordam beradi — avtomatik ravishda.",
+    badge: "AI-Powered Business Platform",
+    headline: "Ko'proq savdo qiling. Mijozlarni boshqaring. To'lovni tez oling.",
+    subheading: "SavdoPilot AI savdolarni avtomatlashtirishga, mijozlarni boshqarishga va to'lovlarni yig'ishga yordam beradi — bitta platformada.",
     ctaPrimary: "Bepul boshlash",
     ctaSecondary: "Demo ko'rish",
-    trust: ["AI Savdo", "CRM", "Buyurtmalar", "Analitika"],
+    automateQuestion: "Nimani avtomatlashtirmoqchisiz?",
+    aiSales: {
+      title: "AI Savdo",
+      subtitle: "Mijozlarni toping, leadlarni boshqaring, follow-up'larni avtomatlashtiring va savdolarni oshiring.",
+      features: ["AI Savdo Assistenti", "Lead Boshqaruvi", "Mijoz Boshqaruvi", "Savdo Follow-up'lari", "Buyurtmalar", "Savdo Analitikasi"],
+      workflow: "Lead → Mijoz → Suhbat → Buyurtma → Savdo",
+    },
+    invoices: {
+      title: "Invoicelar va Collections",
+      subtitle: "Invoicelarni kuzating, to'lov eslatmalarini avtomatlashtiring va tezroq to'lov oling.",
+      features: ["Invoice Menjeri", "Due-date Tracking", "To'langan / To'lanmagan / Overdue", "AI To'lov Eslatmalari", "AI Javob Tushunish", "To'lov Va'dalari Tracking", "Collections Dashboard"],
+      workflow: "Invoice → Due Date → AI Follow-up → Mijoz Javobi → To'lov",
+    },
+    dashboard: {
+      sales: { newLeads: 38, orders: 24, sales: "$4,820" },
+      collections: { outstanding: "$18,400", overdue: "$6,200", recovered: "$3,800" },
+    },
     chat: {
       customer1: "3 xonali kvartira kerak edi, Chilonzorda",
       ai1: "Chilonzor tumanida 3 xonali variantlarimiz bor. Byudjetingiz taxminan qancha?",
@@ -173,6 +224,75 @@ export function LandingPage() {
               {t.subheading}
             </p>
 
+            <div className="mt-8">
+              <p className="text-sm font-medium text-muted-foreground mb-4">{t.automateQuestion}</p>
+              <div className="grid gap-4 md:grid-cols-2">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Card className="border-primary/20 bg-primary/5 p-6 cursor-pointer hover:border-primary/40 transition-colors">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                        <Bot className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{t.aiSales.title}</h3>
+                        <p className="text-sm text-muted-foreground">{t.aiSales.subtitle}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground font-medium">Features:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {t.aiSales.features.map((feature, i) => (
+                          <span key={i} className="inline-flex items-center rounded-full bg-background px-2 py-1 text-xs">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-xs text-muted-foreground font-medium">Workflow:</p>
+                      <p className="text-sm font-medium mt-1">{t.aiSales.workflow}</p>
+                    </div>
+                  </Card>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Card className="border-green-500/20 bg-green-500/5 p-6 cursor-pointer hover:border-green-500/40 transition-colors">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10">
+                        <FileText className="h-6 w-6 text-green-500" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{t.invoices.title}</h3>
+                        <p className="text-sm text-muted-foreground">{t.invoices.subtitle}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground font-medium">Features:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {t.invoices.features.map((feature, i) => (
+                          <span key={i} className="inline-flex items-center rounded-full bg-background px-2 py-1 text-xs">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-xs text-muted-foreground font-medium">Workflow:</p>
+                      <p className="text-sm font-medium mt-1">{t.invoices.workflow}</p>
+                    </div>
+                  </Card>
+                </motion.div>
+              </div>
+            </div>
+
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -196,15 +316,6 @@ export function LandingPage() {
                   </Link>
                 </Button>
               </motion.div>
-            </div>
-
-            <div className="mt-12 flex flex-wrap items-center gap-4 md:gap-6 text-sm text-muted-foreground">
-              {t.trust.map((item, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary" />
-                  <span>{item}</span>
-                </div>
-              ))}
             </div>
           </motion.div>
 
@@ -317,6 +428,23 @@ export function LandingPage() {
                       </div>
                     </div>
                   </motion.div>
+
+                  {/* Customer message */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 }}
+                    className="flex gap-2 md:gap-3"
+                  >
+                    <div className="flex h-7 w-7 md:h-8 md:w-8 shrink-0 items-center justify-center rounded-full bg-muted">
+                      <User className="h-3 w-3 md:h-4 md:w-4" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="rounded-lg bg-muted p-2 md:p-3 text-xs md:text-sm">
+                        {t.chat.customer3}
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
 
                 {/* Success indicator */}
@@ -389,15 +517,56 @@ export function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="font-display text-3xl">Dashboard preview</h2>
-        <Card className="mt-6 grid gap-4 md:grid-cols-4">
-          {['Bugungi daromad', 'Xarajat', 'Foyda', 'Buyurtmalar'].map((k) => (
-            <div key={k} className="rounded-xl bg-muted p-4">
-              <p className="text-xs text-muted-foreground">{k}</p>
-              <p className="mt-2 font-display text-2xl">—</p>
+        <h2 className="font-display text-3xl">Dashboard Preview</h2>
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          {/* Sales Metrics */}
+          <Card className="border-primary/20 bg-primary/5 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                <TrendingUp className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold text-lg">Sales</h3>
             </div>
-          ))}
-        </Card>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">New Leads</span>
+                <span className="font-semibold">{t.dashboard.sales.newLeads}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Orders</span>
+                <span className="font-semibold">{t.dashboard.sales.orders}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Sales</span>
+                <span className="font-semibold text-green-500">{t.dashboard.sales.sales}</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Collections Metrics */}
+          <Card className="border-green-500/20 bg-green-500/5 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
+                <DollarSign className="h-5 w-5 text-green-500" />
+              </div>
+              <h3 className="font-semibold text-lg">Collections</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Outstanding</span>
+                <span className="font-semibold">{t.dashboard.collections.outstanding}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Overdue</span>
+                <span className="font-semibold text-red-500">{t.dashboard.collections.overdue}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Recovered by AI</span>
+                <span className="font-semibold text-green-500">{t.dashboard.collections.recovered}</span>
+              </div>
+            </div>
+          </Card>
+        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16">
