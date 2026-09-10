@@ -15,6 +15,7 @@ import {
   signInWithGoogle,
   resetPassword,
   AuthError,
+  firebaseConfigMissing,
 } from '@/services/auth'
 import { actions } from '@/store/app-store'
 import {
@@ -126,6 +127,32 @@ function ProductBanner({ product }: { product: ProductType | null }) {
     >
       <span className="h-1.5 w-1.5 rounded-full bg-primary" />
       {PRODUCT_LABELS[product]}
+    </motion.div>
+  )
+}
+
+function FirebaseNotice() {
+  const [dismissed, setDismissed] = useState(false)
+  if (!firebaseConfigMissing() || dismissed) return null
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="mb-4 rounded-xl border border-accent/50 bg-accent/10 px-3 py-2.5 text-xs leading-relaxed text-accent-foreground"
+    >
+      <p className="font-semibold">⚠️ Firebase sozlanmagan</p>
+      <p className="mt-0.5">
+        Google va yangi ro‘yxatdan o‘tish hozir ishlamaydi. Faqat demo hisoblar:{' '}
+        <code className="rounded bg-background/60 px-1">demo@savdopilot.uz / demo1234</code>. Sozlash:
+        <code className="ml-1 rounded bg-background/60 px-1">FIREBASE_SETUP.md</code>.
+      </p>
+      <button
+        type="button"
+        className="mt-1 font-medium underline underline-offset-2"
+        onClick={() => setDismissed(true)}
+      >
+        Yopish
+      </button>
     </motion.div>
   )
 }
@@ -306,6 +333,7 @@ export function LoginPage({ initialMode = 'login' }: { initialMode?: 'login' | '
 
   return (
     <AuthFrame title={showProductTitle} greeting={mode === 'login' ? c.loginGreeting : c.registerGreeting}>
+      <FirebaseNotice />
       <ProductBanner product={product} />
 
       {/* Login / Sign up switch */}
@@ -450,6 +478,7 @@ export function ForgotPage() {
 
   return (
     <AuthFrame title={c.forgotTitle}>
+      <FirebaseNotice />
       <form className="space-y-4" onSubmit={submit} noValidate>
         <Field label={c.email} error={error}>
           <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />

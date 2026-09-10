@@ -1,7 +1,7 @@
 // Reusable authentication functions. UI components call these — never the Firebase
-// SDK directly. Falls back to the existing demo auth (app-store) when Firebase is
-// not configured (missing env vars), so Demo Mode and the local demo accounts keep
-// working unchanged.
+// SDK directly. When Firebase env vars are missing, auth falls back to the local
+// DEMO accounts only (demo@savdopilot.uz / admin@savdopilot.uz) — arbitrary signups
+// are rejected so the app never pretends a real account was created.
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -15,31 +15,47 @@ import {
 import { getFirebaseAuth, googleProvider } from '@/lib/firebase'
 import { stashPendingProduct, type ProductType } from '@/lib/product-context'
 import { actions, getState, subscribe } from '@/store/app-store'
+import { env } from '@/config/env'
 
 type DemoResult = { uid: string; email: string | null; displayName: string | null }
 
-function demoGoogleSignIn(): DemoResult {
-  actions.loginGoogle()
-  const profile = { uid: 'demo-google-user', email: 'demo@savdopilot.uz', displayName: 'Demo Google User' }
-  return profile
+/** Seeded demo accounts usable when Firebase is not configured. */
+const DEMO_ACCOUNTS: Record<string, string> = {
+  'demo@savdopilot.uz': 'demo1234',
+  'admin@savdopilot.uz': 'admin1234',
 }
 
-function demoEmailSignIn(email: string, displayName?: string): DemoResult {
-  // Demo mode: accept any credentials by delegating to the local store; fall back to
-  // registering a throwaway profile when the account does not exist yet.
+export function isFirebaseReady(): boolean {
+  return getFirebaseAuth() !== null
+}
+
+/** True when Firebase env vars are absent (or still placeholder values). */
+export function firebaseConfigMissing(): boolean {
+  return !env.isFirebaseConfigured
+}
+
+function demoEmailSignIn(email: string, password: string, displayName?: string): DemoResult {
+  const known = Object.keys(DEMO_ACCOUNTS).find((e) => e.toLowerCase() === email.toLowerCase())
+  if (!known) {
+    throw new AuthError(
+      'Firebase hali sozlanmagan. Faqat demo hisoblar ishlaydi (demo@savdopilot.uz / demo1234).',
+    )
+  }
+  if (DEMO_ACCOUNTS[known] !== password) {
+    throw new AuthError('Email yoki parol noto‘g‘ri.')
+  }
   try {
-    actions.login(email, 'demo1234')
-    return { uid: 'demo-email-user', email, displayName: displayName ?? null }
+    actions.login(known, password)
   } catch {
     actions.register({
-      fullName: displayName || email.split('@')[0],
-      email,
-      password: 'demo1234',
+      fullName: displayName || 'Demo User',
+      email: known,
+      password,
       businessName: 'Demo Business',
       businessType: 'other',
     })
-    return { uid: 'demo-email-user', email, displayName: displayName ?? null }
   }
+  return { uid: 'demo-email-user', email: known, displayName: displayName ?? null }
 }
 
 function mapAuthError(code: string): string {
@@ -109,7 +125,10 @@ export async function signUpWithEmail(
 ): Promise<AuthUser> {
   const auth = getFirebaseAuth()
   if (!auth) {
-    return toAuthUserFromDemo(demoEmailSignIn(email, fullName))
+    // No Firebase → refuse to create accounts that would silently vanish.
+    throw new AuthError(
+      'Firebase sozlanmagan — ro‘yxatdan o‘tish faqat Firebase kalitlari .env’ga qo‘shilgandan keyin ishlaydi. Hozircha demo hisob bilan kiring.',
+    )
   }
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password)
@@ -124,7 +143,7 @@ export async function signUpWithEmail(
 export async function signInWithEmail(email: string, password: string): Promise<AuthUser> {
   const auth = getFirebaseAuth()
   if (!auth) {
-    return toAuthUserFromDemo(demoEmailSignIn(email))
+    return toAuthUserFromDemo(demoEmailSignIn(email, password))
   }
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password)
@@ -139,7 +158,10 @@ export async function signInWithGoogle(product: ProductType | null): Promise<Aut
   stashPending(product)
   const auth = getFirebaseAuth()
   if (!auth) {
-    return toAuthUserFromDemo(demoGoogleSignIn())
+    // No Firebase → the Google popup cannot open. Be honest instead of fake-logging-in.
+    throw new AuthError(
+      'Firebase sozlanmagan — Google orqali kirish .env’ga Firebase kalitlari qo‘shilgach ishlaydi. Hozircha demo hisob bilan kiring.',
+    )
   }
   try {
     const cred = await signInWithPopup(auth, googleProvider())
@@ -162,7 +184,13 @@ export async function signOut(): Promise<void> {
 export async function resetPassword(email: string): Promise<void> {
   const auth = getFirebaseAuth()
   if (!auth) {
-    actions.resetPassword(email) // demo: just validate the email exists locally
+    // Demo mode: validate the email belongs to a seeded demo account only.
+    const known = Object.keys(DEMO_ACCOUNTS).some((e) => e.toLowerCase() === email.toLowerCase())
+    if (!known) {
+      throw new AuthError(
+        'Firebase sozlanmagan — parolni tiklash faqat demo hisoblar uchun sinab ko‘riladi.',
+      )
+    }
     return
   }
   try {

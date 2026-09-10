@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import { ThemeProvider } from '@/components/theme-provider'
+import { ErrorBoundary } from '@/components/error-boundary'
 import { AppShell } from '@/components/layout/app-shell'
 import { AuthGuard } from '@/components/layout/guards'
 import { AuthInit, useAuth } from '@/hooks/use-auth'
@@ -93,12 +94,14 @@ function AuthedRoutes() {
 function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="savdopilot-theme">
-      <AuthInit>
-        <BrowserRouter>
-          <AuthedRoutes />
-          <Toaster position="top-right" />
-        </BrowserRouter>
-      </AuthInit>
+      <ErrorBoundary>
+        <AuthInit>
+          <BrowserRouter>
+            <AuthedRoutes />
+            <Toaster position="top-right" />
+          </BrowserRouter>
+        </AuthInit>
+      </ErrorBoundary>
     </ThemeProvider>
   )
 }

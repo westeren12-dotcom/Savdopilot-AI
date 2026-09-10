@@ -18,8 +18,10 @@ export const env = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID ?? '',
   },
   get isFirebaseConfigured(): boolean {
+    const f = this.firebase
+    const filled = (v: string) => Boolean(v) && !v.startsWith('your-')
     return Boolean(
-      this.firebase.apiKey && this.firebase.authDomain && this.firebase.projectId && this.firebase.appId,
+      filled(f.apiKey) && filled(f.authDomain) && filled(f.projectId) && filled(f.appId),
     )
   },
 } as const
