@@ -20,6 +20,8 @@ import type {
 
 export interface AppState {
   sessionUserId: string | null
+  /** Homepage direction chosen before sign-in completes. */
+  productTypePending?: 'sales' | 'invoices'
   profiles: Profile[]
   passwords: Record<string, string>
   businesses: Business[]

@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { Loader2 } from 'lucide-react'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AppShell } from '@/components/layout/app-shell'
 import { AuthGuard } from '@/components/layout/guards'
+import { AuthInit, useAuth } from '@/hooks/use-auth'
 import { LandingPage, PricingBlock } from '@/features/landing/landing-page'
 import { LoginPage, RegisterPage, ForgotPage } from '@/features/auth/auth-pages'
 import { OnboardingPage } from '@/features/onboarding/onboarding-page'
@@ -22,10 +24,26 @@ import { SettingsPage } from '@/features/settings/settings-page'
 import { AdminPage } from '@/features/admin/admin-page'
 import { InvoiceCollectionsPage } from '@/features/invoice-collections/invoice-collections-page'
 
-function App() {
+function AuthSplash() {
+  const { loading } = useAuth()
+  if (!loading) return null
   return (
-    <ThemeProvider defaultTheme="system" storageKey="savdopilot-theme">
-      <BrowserRouter>
+    <div className="mesh grid min-h-screen place-items-center">
+      <div className="flex flex-col items-center gap-3">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">Yuklanmoqda…</p>
+      </div>
+    </div>
+  )
+}
+
+/** Renders routes only after the auth state listener has resolved once. */
+function AuthedRoutes() {
+  const { loading } = useAuth()
+  return (
+    <>
+      <AuthSplash />
+      {!loading && (
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
@@ -33,7 +51,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPage />} />
-          
+
           {/* Protected routes */}
           <Route
             path="/onboarding"
@@ -53,7 +71,7 @@ function App() {
               </AuthGuard>
             }
           />
-          
+
           {/* Admin routes */}
           <Route
             path="/admin/*"
@@ -63,12 +81,24 @@ function App() {
               </AuthGuard>
             }
           />
-          
+
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        <Toaster position="top-right" />
-      </BrowserRouter>
+      )}
+    </>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="savdopilot-theme">
+      <AuthInit>
+        <BrowserRouter>
+          <AuthedRoutes />
+          <Toaster position="top-right" />
+        </BrowserRouter>
+      </AuthInit>
     </ThemeProvider>
   )
 }

@@ -98,18 +98,94 @@ function notify(userId: string, kind: AppNotification['kind'], title: string, bo
 }
 
 export const actions = {
-  login(email: string, password: string) {
+  login(email: string, password: string, productType?: 'sales' | 'invoices') {
     const profile = state.profiles.find((p) => p.email.toLowerCase() === email.toLowerCase())
     if (!profile) throw new Error('Email topilmadi')
     if (profile.blocked) throw new Error('Akkount bloklangan')
     if (state.passwords[profile.id] !== password) throw new Error('Parol noto‘g‘ri')
-    patch({ sessionUserId: profile.id })
+    patch({ sessionUserId: profile.id, ...(productType ? { productType } : {}) })
+    if (productType) actions.setProductType(productType)
   },
 
-  loginGoogle() {
+  loginGoogle(productType?: 'sales' | 'invoices') {
     const demo = state.profiles.find((p) => p.email === 'demo@savdopilot.uz')
     if (!demo) throw new Error('Google demo foydalanuvchi yo‘q')
     patch({ sessionUserId: demo.id })
+    if (productType) actions.setProductType(productType)
+  },
+
+  /** Stamp the chosen homepage direction onto the profile (persists in localStorage). */
+  setProductType(productType: 'sales' | 'invoices') {
+    const id = state.sessionUserId
+    if (!id) {
+      // Not signed in yet: remember globally so it survives the auth round-trip.
+      patch({ productTypePending: productType })
+      return
+    }
+    patch({
+      productTypePending: undefined,
+      profiles: state.profiles.map((p) => (p.id === id ? { ...p, productType } : p)),
+    })
+  },
+
+  /** Firebase/external sign-in bridge: find or create the local profile + business. */
+  loginExternal(input: { email: string; fullName?: string; productType?: 'sales' | 'invoices' }) {
+    const existing = state.profiles.find((p) => p.email.toLowerCase() === input.email.toLowerCase())
+    if (existing) {
+      if (existing.blocked) throw new Error('Akkount bloklangan')
+      patch({ sessionUserId: existing.id })
+      if (input.productType) actions.setProductType(input.productType)
+      return
+    }
+    const id = uid('usr')
+    const bid = uid('biz')
+    const name = input.fullName?.trim() || input.email.split('@')[0]
+    const profile: Profile = {
+      id,
+      email: input.email,
+      fullName: name,
+      role: 'owner',
+      blocked: false,
+      referralCode: referralCodeFromName(name),
+      productType: input.productType,
+      createdAt: nowIso(),
+    }
+    const business: Business = {
+      id: bid,
+      ownerId: id,
+      name: `${name} biznesi`,
+      type: 'other',
+      phone: '',
+      address: '',
+      workingHours: '09:00–21:00',
+      telegram: '',
+      instagram: '',
+      onboardingComplete: false,
+      aiPersona: 'Do‘stona, qisqa va o‘zbek tilida javob beruvchi AI-sotuvchi.',
+      aiWelcome: `Assalomu alaykum! ${name}ga xush kelibsiz.`,
+      aiLanguage: 'uz',
+      createdAt: nowIso(),
+    }
+    const start = nowIso()
+    const sub: Subscription = {
+      id: uid('sub'),
+      businessId: bid,
+      planCode: 'free',
+      cycle: 'monthly',
+      startAt: start,
+      endAt: addMonths(start, 1),
+      bonusDays: 0,
+      autoRenew: true,
+    }
+    patch({
+      sessionUserId: id,
+      productTypePending: undefined,
+      profiles: [...state.profiles, profile],
+      businesses: [...state.businesses, business],
+      subscriptions: [...state.subscriptions, sub],
+      aiUsed: { ...state.aiUsed, [bid]: 0 },
+      extraCredits: { ...state.extraCredits, [bid]: 0 },
+    })
   },
 
   logout() {
@@ -123,6 +199,7 @@ export const actions = {
     businessName: string
     businessType: Business['type']
     referralCode?: string
+    productType?: 'sales' | 'invoices'
   }) {
     if (state.profiles.some((p) => p.email.toLowerCase() === input.email.toLowerCase())) {
       throw new Error('Bu email allaqachon ro‘yxatdan o‘tgan')
@@ -137,6 +214,7 @@ export const actions = {
       blocked: false,
       referralCode: referralCodeFromName(input.fullName),
       referredByCode: input.referralCode || undefined,
+      productType: input.productType ?? state.productTypePending,
       createdAt: nowIso(),
     }
     const business: Business = {
@@ -201,6 +279,7 @@ export const actions = {
 
     patch({
       sessionUserId: id,
+      productTypePending: undefined, // consumed into profile.productType above
       profiles: [...state.profiles, profile],
       passwords: { ...state.passwords, [id]: input.password },
       businesses: [...businesses, business],

@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BUSINESS_TYPES, type BusinessType, type Product } from '@/types'
+import { readSelectedProduct } from '@/lib/product-context'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input, Label, Textarea } from '@/components/ui/input'
@@ -43,7 +44,7 @@ export function OnboardingPage() {
       aiPersona,
       aiWelcome,
     })
-    nav('/app')
+    nav(readSelectedProduct() === 'invoices' ? '/app/collections' : '/app')
   }
 
   return (

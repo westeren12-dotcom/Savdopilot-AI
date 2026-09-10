@@ -52,6 +52,8 @@ export interface Profile {
   blocked: boolean
   referralCode: string
   referredByCode?: string
+  /** Homepage direction: 'sales' (AI Sales) or 'invoices' (Invoices & Collections). */
+  productType?: 'sales' | 'invoices'
   createdAt: string
 }
 
