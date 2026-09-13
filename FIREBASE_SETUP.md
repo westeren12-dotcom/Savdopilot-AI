@@ -9,7 +9,7 @@ funksiyalari). Faqat kalitlarni `.env` ga qo'yish va Console'da 3 ta sozlash ker
 ## 1. Firebase loyihasi yarating
 
 1. https://console.firebase.google.com → **Add project**
-2. Nom: `savdopilot-ai` (yoki istalgan) → Analytics ixtiyoriy → **Create**
+2. Nom: istalgan (masalan `aventryx-ai`) → Analytics ixtiyoriy → **Create**
 
 ## 2. Web App qo'shib, kalitlarni oling
 
@@ -24,12 +24,17 @@ bilan almashtiring):
 
 ```env
 VITE_FIREBASE_API_KEY=AIzaSy...real-key...
-VITE_FIREBASE_AUTH_DOMAIN=savdopilot-ai.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=savdopilot-ai
-VITE_FIREBASE_STORAGE_BUCKET=savdopilot-ai.appspot.com
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project
+VITE_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=123456789012
 VITE_FIREBASE_APP_ID=1:123456789012:web:abc123def456
+VITE_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
+
+> `measurementId` ixtiyoriy — faqat Analytics ishlatilsa kerak. Yangi loyihalarda
+> storage bucket `.firebasestorage.app`, eski loyihalarda `.appspot.com` bo'ladi —
+> Console'da ko'rsatilgan qiymatni aynan nusxalang.
 
 `.env` fayli `.gitignore`da — GitHub'ga tushmaydi. `.env.example` faqat template.
 

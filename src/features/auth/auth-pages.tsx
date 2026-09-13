@@ -443,9 +443,11 @@ export function LoginPage({ initialMode = 'login' }: { initialMode?: 'login' | '
             {c.forgot}
           </Link>
         </p>
-        <p className="text-xs text-muted-foreground">
-          Demo: demo@savdopilot.uz / demo1234 · Admin: admin@savdopilot.uz / admin1234
-        </p>
+        {firebaseConfigMissing() && (
+          <p className="text-xs text-muted-foreground">
+            Demo: demo@savdopilot.uz / demo1234 · Admin: admin@savdopilot.uz / admin1234
+          </p>
+        )}
       </div>
     </AuthFrame>
   )

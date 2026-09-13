@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useSession } from '@/hooks/use-session'
 import { AppShell } from '@/components/layout/app-shell'
 import { readSelectedProduct, type ProductType } from '@/lib/product-context'
@@ -11,9 +11,18 @@ export function productDestination(p: ProductType | null): string {
 
 export function AuthGuard({ requireAdmin = false, children }: { requireAdmin?: boolean; children?: ReactNode }) {
   const { profile, business } = useSession()
+  const { pathname } = useLocation()
   if (!profile) return <Navigate to="/login" replace />
   if (requireAdmin && profile.role !== 'admin') return <Navigate to="/app" replace />
-  if (!requireAdmin && profile.role !== 'admin' && business && !business.onboardingComplete) {
+  // Redirect to onboarding only when we are not already there — otherwise the
+  // guard would loop forever on /onboarding and the page would never render.
+  if (
+    !requireAdmin &&
+    profile.role !== 'admin' &&
+    business &&
+    !business.onboardingComplete &&
+    pathname !== '/onboarding'
+  ) {
     return <Navigate to="/onboarding" replace />
   }
   return <>{children || <Outlet />}</>
