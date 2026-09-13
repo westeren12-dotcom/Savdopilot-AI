@@ -26,30 +26,40 @@ import { useTheme } from '@/components/theme-provider'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { readSelectedProduct, type ProductType } from '@/lib/product-context'
 import type { ReactNode } from 'react'
 
-const nav = [
+// Product-aware navigation: 'sales' items only for AI Sales users, the
+// Collections workspace only for Invoices & Collections users.
+const nav: { to: string; label: string; icon: typeof LayoutDashboard; products?: ProductType[] }[] = [
   { to: '/app', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/app/ai', label: 'AI-Sotuvchi', icon: Bot },
-  { to: '/app/orders', label: 'Buyurtmalar', icon: ShoppingBag },
-  { to: '/app/customers', label: 'CRM', icon: Users },
-  { to: '/app/inventory', label: 'Ombor', icon: Boxes },
-  { to: '/app/finance', label: 'Moliya', icon: Wallet },
-  { to: '/app/collections', label: 'Collections', icon: FileText },
-  { to: '/app/insights', label: 'AI Insights', icon: Sparkles },
+  { to: '/app/ai', label: 'AI-Sotuvchi', icon: Bot, products: ['sales'] },
+  { to: '/app/orders', label: 'Buyurtmalar', icon: ShoppingBag, products: ['sales'] },
+  { to: '/app/customers', label: 'CRM', icon: Users, products: ['sales'] },
+  { to: '/app/inventory', label: 'Ombor', icon: Boxes, products: ['sales'] },
+  { to: '/app/finance', label: 'Moliya', icon: Wallet, products: ['sales'] },
+  { to: '/app/collections', label: 'Collections', icon: FileText, products: ['invoices'] },
+  { to: '/app/insights', label: 'AI Insights', icon: Sparkles, products: ['sales'] },
   { to: '/app/integrations', label: 'Integratsiyalar', icon: Plug },
-  { to: '/app/voice', label: 'Voice AI', icon: Mic },
+  { to: '/app/voice', label: 'Voice AI', icon: Mic, products: ['sales'] },
   { to: '/app/billing', label: 'Obuna', icon: CreditCard },
   { to: '/app/referrals', label: 'Referral', icon: Share2 },
   { to: '/app/notifications', label: 'Bildirishnomalar', icon: Bell },
   { to: '/app/settings', label: 'Sozlamalar', icon: Settings },
 ]
 
+function navFor(product: ProductType | null) {
+  return nav.filter((item) => !item.products || (product && item.products.includes(product)))
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const { profile, business, actions, state } = useSession()
   const { theme, toggle } = useTheme()
   const navigate = useNavigate()
   const unread = state.notifications.filter((n) => n.userId === profile?.id && !n.read).length
+  const product = profile?.productType ?? readSelectedProduct()
+  const items = navFor(product)
+  const quickLink = product === 'invoices' ? '/app/collections' : '/app/ai'
 
   return (
     <div className="min-h-screen bg-background md:grid md:grid-cols-[240px_1fr]">
@@ -64,7 +74,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </Link>
         <nav className="flex-1 space-y-0.5 px-3 pb-4">
-          {nav.map((item) => (
+          {items.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -122,7 +132,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <span className="font-display text-lg">AventryX</span>
           <div className="flex gap-2">
             <Button variant="ghost" size="icon" asChild>
-              <Link to="/app/ai">
+              <Link to={quickLink}>
                 <MessageSquare className="h-4 w-4" />
               </Link>
             </Button>
@@ -133,7 +143,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </header>
         <main className="flex-1 p-4 md:p-8">{children}</main>
         <nav className="sticky bottom-0 grid grid-cols-5 border-t bg-card p-2 md:hidden">
-          {[nav[0], nav[1], nav[2], nav[3], nav[11]].map((item) => (
+          {items.slice(0, 5).map((item) => (
             <Link
               key={item.to}
               to={item.to}

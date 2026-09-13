@@ -268,7 +268,8 @@ export function LoginPage({ initialMode = 'login' }: { initialMode?: 'login' | '
   }
 
   function destination() {
-    return product === 'invoices' ? '/app/collections' : '/app'
+    // No direction picked (direct /register visit) → let the chooser decide.
+    return product ? (product === 'invoices' ? '/app/collections' : '/app') : '/choose-service'
   }
 
   async function afterAuth(emailArg: string, fullNameArg?: string) {

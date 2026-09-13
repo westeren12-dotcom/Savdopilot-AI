@@ -30,6 +30,28 @@ export function OnboardingPage() {
   const [products, setProducts] = useState([emptyProduct()])
   const [aiPersona, setAiPersona] = useState('Do‘stona, qisqa, o‘zbek tilida. Faqat haqiqiy narxlarni ayt.')
   const [aiWelcome, setAiWelcome] = useState('Assalomu alaykum! Qanday yordam bera olaman?')
+  const [error, setError] = useState<string | null>(null)
+
+  function next() {
+    setError(null)
+    if (step === 2 && !name.trim()) {
+      setError('Biznes nomini kiriting — bu majburiy maydon.')
+      return
+    }
+    if (step === 3) {
+      const filled = products.filter((p) => p.name.trim())
+      if (filled.length === 0) {
+        setError('Kamida bitta mahsulot nomini kiriting yoki “O‘tkazib yuborish”ni bosing.')
+        return
+      }
+    }
+    setStep(step + 1)
+  }
+
+  function skipProducts() {
+    setError(null)
+    setStep(4)
+  }
 
   function finish() {
     actions.completeOnboarding({
@@ -40,7 +62,7 @@ export function OnboardingPage() {
       workingHours,
       telegram,
       instagram,
-      products,
+      products: products.filter((p) => p.name.trim()),
       aiPersona,
       aiWelcome,
     })
@@ -52,6 +74,12 @@ export function OnboardingPage() {
       <div className="mx-auto max-w-2xl">
         <p className="text-sm text-muted-foreground">Qadam {step} / 4</p>
         <h1 className="font-display mt-2 text-3xl">Biznesni sozlash</h1>
+
+        {error && (
+          <p className="mt-3 rounded-xl border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {error}
+          </p>
+        )}
 
         {step === 1 && (
           <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -71,7 +99,7 @@ export function OnboardingPage() {
 
         {step === 2 && (
           <Card className="mt-6 space-y-3">
-            <Field label="Nomi">
+            <Field label="Nomi" required>
               <Input value={name} onChange={(e) => setName(e.target.value)} required />
             </Field>
             <Field label="Telefon">
@@ -155,9 +183,14 @@ export function OnboardingPage() {
                 />
               </Card>
             ))}
-            <Button variant="outline" onClick={() => setProducts([...products, emptyProduct()])}>
-              Mahsulot qo‘shish
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => setProducts([...products, emptyProduct()])}>
+                Mahsulot qo‘shish
+              </Button>
+              <Button variant="ghost" onClick={skipProducts}>
+                O‘tkazib yuborish
+              </Button>
+            </div>
           </div>
         )}
 
@@ -177,7 +210,7 @@ export function OnboardingPage() {
             Orqaga
           </Button>
           {step < 4 ? (
-            <Button onClick={() => setStep(step + 1)}>Keyingi</Button>
+            <Button onClick={next}>Keyingi</Button>
           ) : (
             <Button onClick={finish}>Dashboardga o‘tish</Button>
           )}
@@ -187,10 +220,13 @@ export function OnboardingPage() {
   )
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+function Field({ label, required, children }: { label: string; required?: boolean; children: ReactNode }) {
   return (
     <div className="space-y-1">
-      <Label>{label}</Label>
+      <Label>
+        {label}
+        {required && <span className="ml-0.5 text-destructive">*</span>}
+      </Label>
       {children}
     </div>
   )
