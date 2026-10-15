@@ -1,4 +1,5 @@
 import { PLAN_LIMITS, effectiveAiLimit } from '@/config/plans'
+import { planPrice } from '@/config/pricing'
 import { demoAiProvider } from '@/services/ai/demo-provider'
 import { LIMIT_MESSAGE } from '@/services/credits'
 import { getPaymentGateway } from '@/services/payment'
@@ -599,8 +600,8 @@ export const actions = {
     if (!biz || !profile) throw new Error('Sessiya yo‘q')
     const months = cycle === '12m' ? 12 : cycle === '6m' ? 6 : 1
     const bonus = cycle === '12m' ? 2 : cycle === '6m' ? 1 : 0
-    const amount =
-      plan === 'free' ? 0 : plan === 'pro' ? 149_000 * months : 399_000 * months
+    // Canonical pricing — single source of truth for all amounts.
+    const amount = planPrice(plan, cycle)
     const pay = await getPaymentGateway().charge({
       amount,
       description: `${plan} ${cycle}`,
@@ -632,6 +633,50 @@ export const actions = {
         sub,
         ...state.subscriptions.filter((s) => s.businessId !== biz.id),
       ],
+      payments: [payment, ...state.payments],
+    })
+  },
+
+  /**
+   * Persist a completed (mock or future Click) payment as an active subscription.
+   * Called by the checkout page on PaymentState === 'success'; keeps plan, cycle,
+   * start/end dates, bonus months and the payment record in one place.
+   */
+  activateSubscription(input: {
+    planCode: PlanCode
+    cycle: BillingCycle
+    startAt: string
+    endAt: string
+    paymentId: string
+    amount: number
+    provider: 'mock' | 'click'
+  }) {
+    const biz = currentBusiness()
+    const profile = currentProfile()
+    if (!biz || !profile) return
+    const bonus = input.cycle === '12m' ? 2 : input.cycle === '6m' ? 1 : 0
+    const sub: Subscription = {
+      id: uid('sub'),
+      businessId: biz.id,
+      planCode: input.planCode,
+      cycle: input.cycle,
+      startAt: input.startAt,
+      endAt: addMonths(input.endAt, bonus),
+      bonusDays: bonus * 30,
+      autoRenew: true,
+    }
+    const payment: PaymentRecord = {
+      id: input.paymentId,
+      businessId: biz.id,
+      provider: input.provider,
+      amount: input.amount,
+      status: 'paid',
+      description: `${input.planCode.toUpperCase()} ${input.cycle}`,
+      createdAt: input.startAt,
+    }
+    notify(profile.id, 'payment', 'To‘lov muvaffaqiyatli', payment.description)
+    patch({
+      subscriptions: [sub, ...state.subscriptions.filter((s) => s.businessId !== biz.id)],
       payments: [payment, ...state.payments],
     })
   },

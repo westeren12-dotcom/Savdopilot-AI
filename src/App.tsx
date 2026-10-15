@@ -9,6 +9,7 @@ import { AuthInit, useAuth } from '@/hooks/use-auth'
 import { LandingPage, PricingBlock } from '@/features/landing/landing-page'
 import { LoginPage, RegisterPage, ForgotPage } from '@/features/auth/auth-pages'
 import { OnboardingPage } from '@/features/onboarding/onboarding-page'
+import { CheckoutPage } from '@/features/checkout/checkout-page'
 import { ChooseServicePage } from '@/features/onboarding/choose-service-page'
 import { DashboardPage } from '@/features/dashboard/dashboard-page'
 import { AiSellerPage } from '@/features/ai-seller/ai-seller-page'
@@ -53,6 +54,7 @@ function AuthedRoutes() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
 
           {/* Protected routes */}
           <Route

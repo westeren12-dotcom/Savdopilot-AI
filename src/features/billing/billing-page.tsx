@@ -6,7 +6,6 @@ import { useSession } from '@/hooks/use-session'
 import { actions } from '@/store/app-store'
 import { toast } from 'sonner'
 import {
-  PLAN_PRICES,
   CYCLE_BONUS,
   creditBonusPercent,
   effectiveAiLimit,
@@ -14,6 +13,7 @@ import {
   type PlanCode,
   type BillingCycle,
 } from '@/config/plans'
+import { planPrice } from '@/config/pricing'
 import { formatSom, daysUntil } from '@/lib/utils'
 import { Crown, Sparkles, CreditCard } from 'lucide-react'
 
@@ -76,7 +76,7 @@ export function BillingPage() {
               </p>
             </div>
             <div className="text-right">
-              <p className="font-display text-2xl">{formatSom(PLAN_PRICES[sub.planCode])}</p>
+              <p className="font-display text-2xl">{formatSom(planPrice(sub.planCode, 'monthly'))}</p>
               <p className="text-xs text-muted-foreground">oyiga</p>
             </div>
           </div>
@@ -118,12 +118,7 @@ export function BillingPage() {
               </div>
               <div className="mb-4">
                 <p className="font-display text-3xl">
-                  {formatSom(
-                    code === 'free'
-                      ? 0
-                      : PLAN_PRICES[code as keyof typeof PLAN_PRICES] *
-                          (selectedCycle === '12m' ? 12 : selectedCycle === '6m' ? 6 : 1),
-                  )}
+                  {formatSom(planPrice(code, selectedCycle))}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {selectedCycle === 'monthly' ? 'oyiga' : 'jami'}
@@ -175,12 +170,7 @@ export function BillingPage() {
           onClick={handleSubscribe}
           disabled={loading || selectedPlan === sub?.planCode}
         >
-          {loading ? 'To‘lov qilinmoqda...' : `Obuna bo‘lish (${formatSom(
-            selectedPlan === 'free'
-              ? 0
-              : PLAN_PRICES[selectedPlan as keyof typeof PLAN_PRICES] *
-                  (selectedCycle === '12m' ? 12 : selectedCycle === '6m' ? 6 : 1),
-          )})`}
+          {loading ? 'To‘lov qilinmoqda...' : `Obuna bo‘lish (${formatSom(planPrice(selectedPlan, selectedCycle))})`}
         </Button>
       </div>
 

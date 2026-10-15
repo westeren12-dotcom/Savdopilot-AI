@@ -19,7 +19,10 @@ import {
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { FEATURES, PLAN_PRICES } from '@/config/plans'
+import { FEATURES } from '@/config/plans'
+import { PLAN_PRICES, DURATIONS, isPaidPlan } from '@/config/pricing'
+import { writePendingCheckout } from '@/lib/checkout-context'
+import { useAuth } from '@/hooks/use-auth'
 import { formatSom, cn } from '@/lib/utils'
 import {
   AiSalesChat,
@@ -636,20 +639,54 @@ function cnRotate(open: boolean) {
 }
 
 export function PricingBlock() {
+  const nav = useNavigate()
+  const { user } = useAuth()
+
+  function choose(code: 'free' | 'pro' | 'premium') {
+    if (!isPaidPlan(code)) return
+    // Default duration 1 oy; user picks 6/12 inside checkout. Persisting here
+    // means the plan survives an auth round-trip (login → back to checkout).
+    writePendingCheckout(code as 'pro' | 'premium', 'monthly')
+    nav(user ? '/checkout' : '/login?next=/checkout')
+  }
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-16" id="pricing">
       <h2 className="font-display text-3xl">Tariflar</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {(['free', 'pro', 'premium'] as const).map((code) => (
-          <Card key={code} className={code === 'premium' ? 'ring-2 ring-accent' : ''}>
+          <Card
+            key={code}
+            className={`transition ${code === 'premium' ? 'ring-2 ring-accent' : ''} ${
+              isPaidPlan(code) ? 'cursor-pointer hover:shadow-md' : ''
+            }`}
+            onClick={isPaidPlan(code) ? () => choose(code) : undefined}
+            role={isPaidPlan(code) ? 'button' : undefined}
+          >
             {code === 'premium' && (
               <div className="mb-2 inline-flex items-center rounded-full bg-accent/30 px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
                 Eng yaxshi qiymat — 12 oy
               </div>
             )}
             <h3 className="font-display text-2xl uppercase">{code}</h3>
-            <p className="mt-2 font-display text-3xl">{formatSom(PLAN_PRICES[code])}</p>
-            <p className="text-xs text-muted-foreground">oyiga</p>
+            {isPaidPlan(code) ? (
+              <>
+                <p className="mt-2 font-display text-3xl">
+                  {formatSom(PLAN_PRICES[code as 'pro' | 'premium'])}
+                </p>
+                <p className="text-xs text-muted-foreground">oyiga</p>
+                <p className="mt-1 text-xs font-medium text-green-700">
+                  {DURATIONS.filter((d) => d.discountPercent > 0)
+                    .map((d) => `${d.label} −${d.discountPercent}%`)
+                    .join(' · ')}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mt-2 font-display text-3xl">Bepul</p>
+                <p className="text-xs text-muted-foreground">&nbsp;</p>
+              </>
+            )}
             <ul className="mt-4 space-y-2 text-sm">
               {FEATURES[code].map((f) => (
                 <li key={f} className="flex gap-2">
@@ -657,9 +694,21 @@ export function PricingBlock() {
                 </li>
               ))}
             </ul>
-            <Button className="mt-6 w-full" asChild>
-              <Link to="/register">Tanlash</Link>
-            </Button>
+            {isPaidPlan(code) ? (
+              <Button
+                className="mt-6 w-full"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  choose(code)
+                }}
+              >
+                Tanlash
+              </Button>
+            ) : (
+              <Button className="mt-6 w-full" asChild>
+                <Link to="/register">Tanlash</Link>
+              </Button>
+            )}
           </Card>
         ))}
       </div>

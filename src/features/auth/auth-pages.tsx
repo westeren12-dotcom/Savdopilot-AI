@@ -234,6 +234,7 @@ function useProductParam(): ProductType | null {
 export function LoginPage({ initialMode = 'login' }: { initialMode?: 'login' | 'signup' } = {}) {
   const nav = useNavigate()
   const product = useProductParam()
+  const [params] = useSearchParams()
   const [mode, setMode] = useState<'login' | 'signup'>(initialMode)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -268,6 +269,9 @@ export function LoginPage({ initialMode = 'login' }: { initialMode?: 'login' | '
   }
 
   function destination() {
+    // Checkout round-trip: ?next=/checkout returns to the pending purchase.
+    const next = params.get('next')
+    if (next && next.startsWith('/')) return next
     // No direction picked (direct /register visit) → let the chooser decide.
     return product ? (product === 'invoices' ? '/app/collections' : '/app') : '/choose-service'
   }
