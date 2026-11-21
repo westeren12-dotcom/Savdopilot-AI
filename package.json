@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "typecheck:api": "tsc -p tsconfig.api.json",
+    "test:api": "node --import tsx --test tests/api/*.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "firebase": "^12.19.0",
+    "firebase-admin": "^13.10.0",
     "framer-motion": "^13.1.1",
     "lucide-react": "^1.37.0",
     "next-themes": "^0.4.6",
@@ -47,6 +50,7 @@
     "@vitejs/plugin-react": "^6.1.0",
     "oxlint": "^1.79.0",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"
   }
