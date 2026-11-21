@@ -1,6 +1,27 @@
 import { createPublicHandler } from './_lib/handler'
 import { getDb } from './_lib/supabase'
-import { apiVersion, isDatabaseConfigured, isFirebaseAdminConfigured, resolveAiConfig, paymentCredentials } from './_lib/env'
+import {
+  apiVersion,
+  paymentCredentials,
+  resolveAiConfig,
+  supabaseConfigStatus,
+} from './_lib/env'
+import { firebaseAuthStatus } from './_lib/auth'
+
+function authCheck(): 'configured' | 'not_configured' | 'invalid' | 'misconfigured' {
+  switch (firebaseAuthStatus()) {
+    case 'ok':
+      return 'configured'
+    case 'missing':
+      return 'not_configured'
+    case 'invalid':
+      return 'invalid'
+    default:
+      // A parseable service account whose project id disagrees with
+      // FIREBASE_PROJECT_ID / VITE_FIREBASE_PROJECT_ID.
+      return 'misconfigured'
+  }
+}
 
 /**
  * GET /api/health
@@ -12,8 +33,9 @@ import { apiVersion, isDatabaseConfigured, isFirebaseAdminConfigured, resolveAiC
 export default createPublicHandler({
   methods: ['GET'],
   handler: async () => {
-    let database = 'not_configured'
-    if (isDatabaseConfigured()) {
+    const config = supabaseConfigStatus()
+    let database: 'ok' | 'not_configured' | 'invalid_url' | 'unreachable' = config
+    if (config === 'ok') {
       try {
         const { error } = await getDb().from('organizations').select('id').limit(1)
         database = error ? 'unreachable' : 'ok'
@@ -30,7 +52,7 @@ export default createPublicHandler({
         time: new Date().toISOString(),
         checks: {
           database,
-          auth: isFirebaseAdminConfigured() ? 'configured' : 'not_configured',
+          auth: authCheck(),
           ai: resolveAiConfig() ? 'configured' : 'not_configured',
           payments: {
             click: Boolean(paymentCredentials('click')),

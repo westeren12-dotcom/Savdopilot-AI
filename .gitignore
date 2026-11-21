@@ -9,6 +9,8 @@ lerna-debug.log*
 
 node_modules
 dist
+# Local tooling (SQL grammar check venv), never part of the app
+.freebuff
 dist-ssr
 *.local
 .env

@@ -85,3 +85,27 @@ o'qiladi), keyin:
 | `auth/operation-not-allowed` | 4.1 — provider enable qilinmagan |
 | `auth/api-key-not-valid` | `.env` qiymati noto'g'ri / server restart qilinmagan |
 | Banner hali ham ko'rinadi | `.env` saqlanmagan yoki dev server restart qilinmagan |
+
+## 6. Server tomoni (Admin SDK)
+
+Brauzerdagi `VITE_FIREBASE_*` kalitlari faqat kirish uchun. Server ID token'ni
+tekshirishi uchun **service account** kerak:
+
+1. Firebase Console → **Project settings → Service accounts → Generate new
+   private key** → JSON faylni yuklab oling.
+2. Butun JSON'ni bitta qatorga `FIREBASE_SERVICE_ACCOUNT` ga yozing yoki base64
+   ko'rinishida bering:
+
+   ```bash
+   node -e "process.stdout.write(Buffer.from(require('fs').readFileSync('service-account.json')).toString('base64'))"
+   ```
+
+3. `FIREBASE_PROJECT_ID` ni JSON ichidagi `project_id` bilan bir xil qiling.
+4. Tekshirish: `GET /api/health` → `auth: "configured"`. Boshqa qiymatlar:
+   `not_configured` — o'zgaruvchi yo'q, `invalid` — JSON yoki PEM kalit buzilgan,
+   `misconfigured` — `project_id` mos emas.
+
+Bu kalit bilan istalgan foydalanuvchi uchun token yaratish mumkin, shuning uchun
+uni frontend'ga, git'ga yoki chatga hech qachon qo'ymang. To'liq matritsa
+(expired / revoked / noto'g'ri signature / kalitni almashtirish):
+`BACKEND_SETUP.md` §11.4.

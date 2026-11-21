@@ -76,6 +76,9 @@ function clientError(code: string | undefined): ApiError {
     case '23503':
     case '22P02':
     case '23514':
+    // P0001 is `raise exception` from our own SQL functions (e.g. "customer
+    // not found in organization"): always an input problem, never an outage.
+    case 'P0001':
       return new ApiError(400, 'bad_request', 'Invalid value in request')
     default:
       return new ApiError(500, 'internal_error', 'Database error')

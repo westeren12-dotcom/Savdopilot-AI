@@ -12,8 +12,16 @@ function read(name: string): string | undefined {
   if (raw === undefined) return undefined
   const value = raw.trim()
   if (value === '') return undefined
-  // .env.example placeholders must be treated as "not configured".
-  if (value.startsWith('your-') || value === 'CHANGEME') return undefined
+  // .env.example placeholders must be treated as "not configured" (otherwise a
+  // copied template reports a healthy URL that can never answer).
+  if (
+    value === 'CHANGEME' ||
+    value.startsWith('your-') ||
+    value.includes('your-project.') ||
+    value.includes('your-domain.')
+  ) {
+    return undefined
+  }
   return value
 }
 
@@ -36,8 +44,48 @@ function positiveInt(name: string, fallback: number): number {
 /** Version reported by /api/health. Not a secret. */
 export const apiVersion = (): string => read('APP_VERSION') ?? '1.0.0'
 
-export const supabaseUrl = (): string | undefined =>
-  read('SUPABASE_URL') ?? read('VITE_SUPABASE_URL')
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '[::1]'])
+
+/**
+ * Normalises the project URL and refuses anything that would send the service
+ * role key over plaintext HTTP: that key bypasses RLS, so a downgraded
+ * connection is a full tenant compromise, not a cosmetic issue. `http://` is
+ * allowed only on loopback, where the PostgREST doubles used by the tests run.
+ */
+function normalizeSupabaseUrl(raw: string): string | undefined {
+  const candidate = raw
+    .trim()
+    .replace(/\/+$/, '')
+    // Copying from the docs often yields `.../rest/v1`; supabase-js appends
+    // that path itself, so keeping it would double it.
+    .replace(/\/rest\/v1$/, '')
+  let url: URL
+  try {
+    url = new URL(candidate)
+  } catch {
+    return undefined
+  }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return undefined
+  if (url.protocol === 'http:' && !LOOPBACK_HOSTS.has(url.hostname)) return undefined
+  if (url.username || url.password) return undefined
+  return candidate
+}
+
+export const supabaseUrl = (): string | undefined => {
+  const raw = read('SUPABASE_URL') ?? read('VITE_SUPABASE_URL')
+  return raw ? normalizeSupabaseUrl(raw) : undefined
+}
+
+/**
+ * Why the database is (not) usable, without ever reading the key's value.
+ * `/api/health` reports this so a plain-HTTP or malformed URL is diagnosable
+ * instead of looking like a missing configuration.
+ */
+export function supabaseConfigStatus(): 'ok' | 'not_configured' | 'invalid_url' {
+  const rawUrl = read('SUPABASE_URL') ?? read('VITE_SUPABASE_URL')
+  if (!rawUrl || !supabaseServiceRoleKey()) return 'not_configured'
+  return supabaseUrl() ? 'ok' : 'invalid_url'
+}
 
 /** Service role key — bypasses RLS. Server-side only. */
 export const supabaseServiceRoleKey = (): string | undefined =>
@@ -46,6 +94,15 @@ export const supabaseServiceRoleKey = (): string | undefined =>
 /** Full service-account JSON (string, or base64-encoded string). */
 export const firebaseServiceAccount = (): string | undefined =>
   read('FIREBASE_SERVICE_ACCOUNT')
+
+/**
+ * The Firebase project the browser signs in to. Only used to cross-check the
+ * service account: a token is minted for one project and is rejected by a
+ * verifier bound to another, so a mismatch is a configuration bug, not a token
+ * problem.
+ */
+export const firebaseProjectId = (): string | undefined =>
+  read('FIREBASE_PROJECT_ID') ?? read('VITE_FIREBASE_PROJECT_ID')
 
 export const aiProviderId = (): string => (read('AI_PROVIDER') ?? 'openai').toLowerCase()
 

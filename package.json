@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "typecheck:api": "tsc -p tsconfig.api.json",
     "test:api": "node --import tsx --test tests/api/*.test.ts",
+    "test:db": "node tests/db/run.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
+    "embedded-postgres": "^18.7.0-beta.19",
     "oxlint": "^1.79.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",

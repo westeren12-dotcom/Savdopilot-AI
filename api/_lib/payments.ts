@@ -95,6 +95,9 @@ async function recordPayment(input: {
   if (!Number.isFinite(input.amount) || input.amount < 0) {
     throw new ApiError(400, 'bad_request', 'Invalid payment amount')
   }
+  // payments.amount is numeric(14,2); a bigger value would raise in Postgres
+  // and turn one bad callback into an endless 500 retry loop.
+  const amount = Math.min(input.amount, 999_999_999_999.99)
   // Never send a non-uuid to Postgres: it is reported as "not found" instead.
   if (!isInvoiceRef(input.invoiceId) || !input.providerPaymentId) return { found: false }
 
@@ -102,7 +105,7 @@ async function recordPayment(input: {
     p_provider: input.provider,
     p_provider_payment_id: input.providerPaymentId,
     p_invoice_id: input.invoiceId,
-    p_amount: input.amount,
+    p_amount: amount,
     p_currency: input.currency.toUpperCase(),
     p_status: input.status,
     p_raw: input.raw,

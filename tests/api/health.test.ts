@@ -50,8 +50,12 @@ test('GET /api/health answers 200 with configuration flags and no secrets', asyn
   }
   assert.equal(body.status, 'ok')
   assert.equal(body.service, 'savdopilot-api')
-  assert.ok(['ok', 'not_configured', 'unreachable'].includes(body.checks.database))
-  assert.ok(['configured', 'not_configured'].includes(body.checks.auth))
+  assert.ok(
+    ['ok', 'not_configured', 'invalid_url', 'unreachable'].includes(body.checks.database),
+  )
+  assert.ok(
+    ['configured', 'not_configured', 'invalid', 'misconfigured'].includes(body.checks.auth),
+  )
   assert.ok(['configured', 'not_configured'].includes(body.checks.ai))
 
   const serialized = JSON.stringify(res.payload)
