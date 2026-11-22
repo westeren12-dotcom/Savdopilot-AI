@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { assertDailyQuota, complete, recordAiInteraction, requireAiConfig } from '../_lib/ai'
-import { createHandler } from '../_lib/handler'
-import { aiReminder, type AiReminderInput } from '../_lib/validation'
+import { assertDailyQuota, complete, recordAiInteraction, requireAiConfig } from '../_lib/ai.js'
+import { createHandler } from '../_lib/handler.js'
+import { aiReminder, type AiReminderInput } from '../_lib/validation.js'
 
 const textSchema = z.string().min(1).max(1200)
 

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import { ApiError, badRequest, logServerInfo } from './errors'
-import { corsAllowedOrigins } from './env'
+import { ApiError, badRequest, logServerInfo } from './errors.js'
+import { corsAllowedOrigins } from './env.js'
 
 /** Minimal structural type for a Vercel Node.js request (avoids @vercel/node). */
 export interface ApiRequest {

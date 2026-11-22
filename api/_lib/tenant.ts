@@ -11,9 +11,9 @@
  *
  * Every data query in the routes additionally filters by organization_id.
  */
-import { ApiError } from './errors'
-import type { AuthUser } from './auth'
-import { getDb, dbQuery } from './supabase'
+import { ApiError } from './errors.js'
+import type { AuthUser } from './auth.js'
+import { getDb, dbQuery } from './supabase.js'
 
 export type OrgRole = 'owner' | 'admin' | 'manager' | 'viewer'
 

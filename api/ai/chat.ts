@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { assertDailyQuota, complete, recordAiInteraction, requireAiConfig, type ChatMessage } from '../_lib/ai'
-import { createHandler } from '../_lib/handler'
-import { aiChat, type AiChatInput } from '../_lib/validation'
+import { assertDailyQuota, complete, recordAiInteraction, requireAiConfig, type ChatMessage } from '../_lib/ai.js'
+import { createHandler } from '../_lib/handler.js'
+import { aiChat, type AiChatInput } from '../_lib/validation.js'
 
 const localeNames = { uz: 'Uzbek', ru: 'Russian', en: 'English' } as const
 

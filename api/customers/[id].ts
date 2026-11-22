@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import { notFound } from '../_lib/errors'
-import { assertCanWrite } from '../_lib/tenant'
-import { createHandler } from '../_lib/handler'
-import { dbQuery, getDb } from '../_lib/supabase'
-import { customerUpdate, type CustomerUpdateInput } from '../_lib/validation'
+import { notFound } from '../_lib/errors.js'
+import { assertCanWrite } from '../_lib/tenant.js'
+import { createHandler } from '../_lib/handler.js'
+import { dbQuery, getDb } from '../_lib/supabase.js'
+import { customerUpdate, type CustomerUpdateInput } from '../_lib/validation.js'
 
 const pathQuery = z.strictObject({
   id: z.uuid(),

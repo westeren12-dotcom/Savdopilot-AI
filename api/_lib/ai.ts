@@ -12,9 +12,9 @@
  * With no credentials this module throws 503 `ai_not_configured` instead of
  * attempting a paid request.
  */
-import { ApiError, logServerError } from './errors'
-import { aiDailyLimitPerOrg, resolveAiConfig } from './env'
-import { getDb } from './supabase'
+import { ApiError, logServerError } from './errors.js'
+import { aiDailyLimitPerOrg, resolveAiConfig } from './env.js'
+import { getDb } from './supabase.js'
 
 export type AiConfig = NonNullable<ReturnType<typeof resolveAiConfig>>
 export type AiFeature = 'chat' | 'message' | 'insights' | 'reminder'

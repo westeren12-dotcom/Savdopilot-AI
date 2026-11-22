@@ -1,7 +1,7 @@
-import { assertCanWrite } from '../_lib/tenant'
-import { createHandler } from '../_lib/handler'
-import { dbQuery, getDb } from '../_lib/supabase'
-import { customerCreate, paginationQuery } from '../_lib/validation'
+import { assertCanWrite } from '../_lib/tenant.js'
+import { createHandler } from '../_lib/handler.js'
+import { dbQuery, getDb } from '../_lib/supabase.js'
+import { customerCreate, paginationQuery } from '../_lib/validation.js'
 
 type CustomerRow = {
   id: string
@@ -31,7 +31,7 @@ export default createHandler<unknown, { limit: number; offset: number }>({
 
     if (method === 'POST') {
       assertCanWrite(org)
-      const input = body as import('../_lib/validation').CustomerCreateInput
+      const input = body as import('../_lib/validation.js').CustomerCreateInput
       const row = await dbQuery<CustomerRow>('customers_create', () =>
         db
           .from('customers')

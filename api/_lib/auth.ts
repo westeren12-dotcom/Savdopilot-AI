@@ -8,9 +8,9 @@
  * `firebase-admin` is imported lazily so a deployment that has not configured
  * service-account credentials still boots (and answers 503, not 500).
  */
-import { ApiError, logServerError, logServerInfo } from './errors'
-import { header, type ApiRequest } from './http'
-import { firebaseProjectId, firebaseServiceAccount, isFirebaseAdminConfigured } from './env'
+import { ApiError, logServerError, logServerInfo } from './errors.js'
+import { header, type ApiRequest } from './http.js'
+import { firebaseProjectId, firebaseServiceAccount, isFirebaseAdminConfigured } from './env.js'
 
 export type AuthUser = {
   uid: string

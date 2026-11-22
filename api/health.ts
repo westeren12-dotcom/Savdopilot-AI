@@ -1,12 +1,12 @@
-import { createPublicHandler } from './_lib/handler'
-import { getDb } from './_lib/supabase'
+import { createPublicHandler } from './_lib/handler.js'
+import { getDb } from './_lib/supabase.js'
 import {
   apiVersion,
   paymentCredentials,
   resolveAiConfig,
   supabaseConfigStatus,
-} from './_lib/env'
-import { firebaseAuthStatus } from './_lib/auth'
+} from './_lib/env.js'
+import { firebaseAuthStatus } from './_lib/auth.js'
 
 function authCheck(): 'configured' | 'not_configured' | 'invalid' | 'misconfigured' {
   switch (firebaseAuthStatus()) {

@@ -7,8 +7,8 @@
  * for any other access path. Never import this module from `src/`.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { ApiError, logServerError } from './errors'
-import { isDatabaseConfigured, supabaseServiceRoleKey, supabaseUrl } from './env'
+import { ApiError, logServerError } from './errors.js'
+import { isDatabaseConfigured, supabaseServiceRoleKey, supabaseUrl } from './env.js'
 
 let cached: SupabaseClient | null = null
 let cachedFingerprint = ''

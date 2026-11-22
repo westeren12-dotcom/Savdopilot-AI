@@ -1,7 +1,7 @@
-import { ApiError, logServerError, toPublicBody } from '../../_lib/errors'
-import { clientIp, header, readRawBody, requestId as makeRequestId, sendJson, type ApiRequest, type ApiResponse } from '../../_lib/http'
-import { RATE_LIMITS, rateLimit } from '../../_lib/rate-limit'
-import { handleProviderWebhook } from '../../_lib/payments'
+import { ApiError, logServerError, toPublicBody } from '../../_lib/errors.js'
+import { clientIp, header, readRawBody, requestId as makeRequestId, sendJson, type ApiRequest, type ApiResponse } from '../../_lib/http.js'
+import { RATE_LIMITS, rateLimit } from '../../_lib/rate-limit.js'
+import { handleProviderWebhook } from '../../_lib/payments.js'
 
 export const config = {
   api: {

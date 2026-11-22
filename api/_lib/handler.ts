@@ -7,7 +7,7 @@
  * internal detail. Validation failures return only field paths and messages.
  */
 import type { ZodType } from 'zod'
-import { ApiError, logServerError, toPublicBody } from './errors'
+import { ApiError, logServerError, toPublicBody } from './errors.js'
 import {
   applyCors,
   assertMethod,
@@ -18,10 +18,10 @@ import {
   sendJson,
   type ApiRequest,
   type ApiResponse,
-} from './http'
-import { RATE_LIMITS, rateLimit } from './rate-limit'
-import { requireUser, type AuthUser } from './auth'
-import { requireOrgContext, type OrgContext } from './tenant'
+} from './http.js'
+import { RATE_LIMITS, rateLimit } from './rate-limit.js'
+import { requireUser, type AuthUser } from './auth.js'
+import { requireOrgContext, type OrgContext } from './tenant.js'
 
 export type RateLimitKind = keyof typeof RATE_LIMITS
 

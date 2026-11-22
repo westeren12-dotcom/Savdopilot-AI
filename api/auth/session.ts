@@ -1,6 +1,6 @@
-import { createHandler } from '../_lib/handler'
-import { dbQuery, getDb } from '../_lib/supabase'
-import type { OrgRole } from '../_lib/tenant'
+import { createHandler } from '../_lib/handler.js'
+import { dbQuery, getDb } from '../_lib/supabase.js'
+import type { OrgRole } from '../_lib/tenant.js'
 
 type MembershipRow = {
   organization_id: string

@@ -16,9 +16,9 @@
  * signing scheme against your merchant contract before going live.
  */
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
-import { ApiError, logServerError } from './errors'
-import { paymentCredentials } from './env'
-import { getDb } from './supabase'
+import { ApiError, logServerError } from './errors.js'
+import { paymentCredentials } from './env.js'
+import { getDb } from './supabase.js'
 
 /** `status` defaults to 200; providers read the body, not the HTTP code. */
 export type WebhookOutcome = { status?: number; body: unknown }
