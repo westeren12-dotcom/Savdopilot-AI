@@ -1,8 +1,8 @@
-import { assertCanWrite } from '../_lib/tenant.js'
-import { notFound } from '../_lib/errors.js'
-import { createHandler } from '../_lib/handler.js'
-import { dbQuery, dbQueryMaybe, getDb } from '../_lib/supabase.js'
-import { invoiceCreate, paginationQuery, type InvoiceCreateInput } from '../_lib/validation.js'
+import { assertCanWrite } from '../tenant.js'
+import { notFound } from '../errors.js'
+import { createHandler } from '../handler.js'
+import { dbQuery, dbQueryMaybe, getDb } from '../supabase.js'
+import { invoiceCreate, paginationQuery, type InvoiceCreateInput } from '../validation.js'
 
 type InvoiceRow = {
   id: string

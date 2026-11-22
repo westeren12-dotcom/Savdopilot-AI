@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import health from '../../api/health'
-import customers from '../../api/customers/index'
+import customers from '../../api/customers'
 
 type FakeResponse = {
   statusCode: number

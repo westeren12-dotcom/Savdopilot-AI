@@ -1,7 +1,7 @@
-import { assertDailyQuota, complete, parseModelJson, recordAiInteraction, requireAiConfig } from '../_lib/ai.js'
-import { ApiError } from '../_lib/errors.js'
-import { createHandler } from '../_lib/handler.js'
-import { aiInsights, aiOutputInsights, type AiInsightsInput } from '../_lib/validation.js'
+import { assertDailyQuota, complete, parseModelJson, recordAiInteraction, requireAiConfig } from '../../ai.js'
+import { ApiError } from '../../errors.js'
+import { createHandler } from '../../handler.js'
+import { aiInsights, aiOutputInsights, type AiInsightsInput } from '../../validation.js'
 
 const periodLabels = { '7d': 'the last 7 days', '30d': 'the last 30 days', '90d': 'the last 90 days' } as const
 
