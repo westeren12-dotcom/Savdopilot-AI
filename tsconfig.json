@@ -5,6 +5,21 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "ignoreDeprecations": "6.0"
+    "ignoreDeprecations": "6.0",
+    /* Vercel's Node.js runtime type-checks /api with this root config and
+       does not support project references. TypeScript 6 defaults `types`
+       to [], so Node globals (process, Buffer, node:* modules) must be
+       requested explicitly, matching tsconfig.api.json. */
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   }
 }
