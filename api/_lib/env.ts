@@ -104,6 +104,16 @@ export const firebaseServiceAccount = (): string | undefined =>
 export const firebaseProjectId = (): string | undefined =>
   read('FIREBASE_PROJECT_ID') ?? read('VITE_FIREBASE_PROJECT_ID')
 
+/**
+ * Firebase uids allowed to read platform-wide aggregates (total organizations).
+ *
+ * Deliberately a server-only allowlist: membership roles are per organization,
+ * so there is no database row that could grant platform-wide visibility, and a
+ * browser-supplied role is never trusted. Empty (the default) means nobody is a
+ * platform administrator and the aggregate is not returned at all.
+ */
+export const platformAdminUids = (): string[] => list('PLATFORM_ADMIN_UIDS')
+
 export const aiProviderId = (): string => (read('AI_PROVIDER') ?? 'openai').toLowerCase()
 
 export const aiModel = (): string => read('AI_MODEL') ?? 'gpt-4o-mini'

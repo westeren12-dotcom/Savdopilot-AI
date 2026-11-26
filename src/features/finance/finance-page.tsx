@@ -8,6 +8,7 @@ import { formatSom } from '@/lib/utils'
 import { Wallet, TrendingUp, TrendingDown, Plus, FileText, DollarSign } from 'lucide-react'
 import type { TransactionType, ExpenseCategory } from '@/types'
 import { Link } from 'react-router-dom'
+import { env } from '@/config/env'
 
 export function FinancePage() {
   const { business, state } = useSession()
@@ -157,14 +158,19 @@ export function FinancePage() {
             </div>
           </div>
           <div className="flex gap-4">
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Total Outstanding</p>
-              <p className="text-lg font-semibold">$48,200</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">AI Recovered</p>
-              <p className="text-lg font-semibold text-green-500">$8,700</p>
-            </div>
+            {/* Sample collections figures: demo-only, never shown as live data. */}
+            {env.useDemoMode && (
+              <>
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">Total Outstanding</p>
+                  <p className="text-lg font-semibold">$48,200</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">AI Recovered</p>
+                  <p className="text-lg font-semibold text-green-500">$8,700</p>
+                </div>
+              </>
+            )}
             <Button asChild>
               <Link to="/app/collections">
                 Open Collections

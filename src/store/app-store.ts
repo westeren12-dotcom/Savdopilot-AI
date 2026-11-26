@@ -28,11 +28,18 @@ import type {
 } from '@/types'
 import { addDays, addMonths, monthKey, nowIso, referralCodeFromName, uid } from '@/lib/utils'
 import { createDemoState } from '@/data/demo/seed'
+import { createEmptyState } from '@/store/initial-state'
+import { env } from '@/config/env'
 import type { AppState } from '@/store/state'
 
 export type { AppState } from '@/store/state'
 
-const KEY = 'savdopilot-demo-v1'
+// Demo records live under their own key only. A real session uses a separate
+// key, so a browser that once ran demo mode cannot replay seeded users,
+// businesses, orders or payments into it.
+const DEMO_KEY = 'savdopilot-demo-v1'
+const REAL_KEY = 'savdopilot-state-v1'
+const KEY = env.useDemoMode ? DEMO_KEY : REAL_KEY
 
 function load(): AppState {
   try {
@@ -41,14 +48,22 @@ function load(): AppState {
   } catch {
     /* ignore */
   }
-  return createDemoState()
+  // Real mode starts empty: never fall back to the demo seed.
+  return env.useDemoMode ? createDemoState() : createEmptyState()
 }
 
-let state: AppState = typeof window === 'undefined' ? createDemoState() : load()
+const initialState = (): AppState =>
+  env.useDemoMode ? createDemoState() : createEmptyState()
+
+let state: AppState = typeof window === 'undefined' ? initialState() : load()
 const listeners = new Set<() => void>()
 
 function persist() {
-  localStorage.setItem(KEY, JSON.stringify(state))
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state))
+  } catch {
+    /* storage unavailable: keep the in-memory state */
+  }
 }
 
 function emit() {
@@ -884,6 +899,8 @@ export const actions = {
   },
 
   resetDemo() {
+    // Seeding demo records into a real session would be fake data.
+    if (!env.useDemoMode) return
     state = createDemoState()
     emit()
   },

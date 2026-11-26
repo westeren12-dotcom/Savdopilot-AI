@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress'
 import { useCredits, useSession } from '@/hooks/use-session'
 import { buildInsights, salesSeries, todayMetrics, topProducts } from '@/lib/analytics'
 import { formatSom, daysUntil } from '@/lib/utils'
+import { env } from '@/config/env'
 
 export function DashboardPage() {
   const { business, state } = useSession()
@@ -54,29 +55,31 @@ export function DashboardPage() {
         <Stat label="Yangi mijozlar" value={String(todayCustomers)} />
       </div>
       
-      {/* Collections Metrics */}
-      <Card className="border-primary/20 bg-primary/5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-semibold text-lg">Invoice Collections</h2>
-            <p className="text-sm text-muted-foreground">AI-powered payment tracking</p>
+      {/* Collections Metrics — demo-only sample figures, hidden in real mode */}
+      {env.useDemoMode && (
+        <Card className="border-primary/20 bg-primary/5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-lg">Invoice Collections</h2>
+              <p className="text-sm text-muted-foreground">AI-powered payment tracking</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Total Outstanding</p>
+                <p className="text-lg font-semibold">$48,200</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">AI Recovered</p>
+                <p className="text-lg font-semibold text-green-500">$8,700</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Overdue</p>
+                <p className="text-lg font-semibold text-red-500">$12,450</p>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Total Outstanding</p>
-              <p className="text-lg font-semibold">$48,200</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">AI Recovered</p>
-              <p className="text-lg font-semibold text-green-500">$8,700</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Overdue</p>
-              <p className="text-lg font-semibold text-red-500">$12,450</p>
-            </div>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      )}
       <Card>
         <div className="mb-2 flex items-center justify-between">
           <h2 className="font-semibold">Savdo</h2>

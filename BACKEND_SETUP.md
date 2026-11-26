@@ -41,6 +41,7 @@ Directory layout:
 ```
 api/
   health.ts                     GET  /api/health
+  stats.ts                      GET  /api/stats
   auth/session.ts               POST /api/auth/session
   customers/index.ts            GET|POST /api/customers
   customers/[id].ts             GET|PATCH|DELETE /api/customers/:id
@@ -94,6 +95,7 @@ Copy `.env.example` to `.env` (git-ignored) and fill it in.
 | `SUPABASE_SERVICE_ROLE_KEY` | Bypasses RLS. Must stay server-side |
 | `FIREBASE_SERVICE_ACCOUNT` | Service-account JSON on one line, or its base64 (required for auth) |
 | `FIREBASE_PROJECT_ID` | Optional cross-check of the service account's `project_id` (falls back to `VITE_FIREBASE_PROJECT_ID`). A mismatch is reported by `/api/health` |
+| `PLATFORM_ADMIN_UIDS` | Comma-separated Firebase uids allowed to read the platform-wide organization count. Empty = nobody; matched against the verified token, never a supplied role |
 | `ALLOWED_ORIGINS` | Comma-separated browser origins allowed by CORS |
 | `APP_URL` | Fallback origin when `ALLOWED_ORIGINS` is empty |
 | `AI_PROVIDER`, `AI_API_KEY`, `AI_API_BASE_URL`, `AI_MODEL` | AI provider |
@@ -432,6 +434,7 @@ text or provider message.
 | --- | --- | --- |
 | GET | `/api/health` | Public. Reports configuration flags only, never values |
 | POST | `/api/auth/session` | Verifies token, bootstraps org, returns context |
+| GET | `/api/stats` | Organization-scoped member counts (total, new 7d/30d). Returns no identities; the organization total only for `PLATFORM_ADMIN_UIDS` |
 | GET/POST | `/api/customers` | `?limit=1..100&offset=` |
 | GET/PATCH/DELETE | `/api/customers/:id` | Cross-tenant ids answer 404 |
 | GET/POST | `/api/sales` | Totals computed server-side |

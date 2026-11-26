@@ -63,6 +63,50 @@ export async function dbQuery<T>(
   return result.data as T
 }
 
+type DbCountResponse = {
+  count: number | null
+  error: { message: string; code?: string } | null
+}
+
+/**
+ * Runs a HEAD/count query. PostgREST reports the row count in `content-range`,
+ * so `.select(columns, { count: 'exact', head: true })` never transfers rows.
+ * Used for aggregates (statistics) where reading every row would be wasteful
+ * and would silently cap at the project's max-rows setting.
+ */
+export async function dbCount(
+  event: string,
+  run: () => PromiseLike<DbCountResponse>,
+): Promise<number> {
+  let result: DbCountResponse
+  try {
+    result = await run()
+  } catch (err) {
+    logServerError(event, { stage: 'transport' }, err)
+    throw new ApiError(500, 'internal_error', 'Database error')
+  }
+  if (result.error) {
+    logServerError(
+      event,
+      { stage: 'query', dbCode: result.error.code ?? null },
+      new Error(result.error.message),
+    )
+    throw clientError(result.error.code)
+  }
+  // An exact count is only usable when PostgREST actually reported one. A
+  // missing/garbled `content-range` must surface as an error (the UI then shows
+  // its error state), because returning 0 would look like real, empty data.
+  if (
+    typeof result.count !== 'number' ||
+    !Number.isSafeInteger(result.count) ||
+    result.count < 0
+  ) {
+    logServerError(event, { stage: 'count' }, new Error('PostgREST returned no exact count'))
+    throw new ApiError(500, 'internal_error', 'Database error')
+  }
+  return result.count
+}
+
 /**
  * Constraint violations are the client's fault, not a server fault: reporting
  * them as 500 makes a retryable input error look like an outage. The SQL text

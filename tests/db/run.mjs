@@ -380,6 +380,37 @@ async function main() {
     })
   })
 
+  await test('runtime RLS denial: anon without grants is refused on every protected table', async () => {
+    for (const table of TABLES) {
+      // One transaction per table: the first permission error aborts its
+      // transaction, which would hide the next table's real error code.
+      await inRolledBackTransaction(async () => {
+        await client.query('set local role anon')
+        await assert.rejects(
+          client.query(`select count(*) from public.${table}`),
+          (error) => error.code === '42501',
+          `anon read ${table}`,
+        )
+      })
+    }
+  })
+
+  await test('runtime RLS denial: even with SELECT granted, anon and authenticated read no rows', async () => {
+    await inRolledBackTransaction(async () => {
+      const tables = TABLES.map((table) => `public.${table}`).join(', ')
+      // Deliberately over-grant to prove the RLS layer holds on its own: RLS is
+      // enabled and forced with no policies, so every read must return 0 rows.
+      await client.query(`grant select on ${tables} to anon, authenticated`)
+      for (const role of ['anon', 'authenticated']) {
+        await client.query(`set local role ${role}`)
+        for (const table of TABLES) {
+          const row = await one(`select count(*)::int as n from public.${table}`)
+          assert.equal(row.n, 0, `${role} read rows from ${table}`)
+        }
+      }
+    })
+  })
+
   // ------------------------------------------------------- §4.4 verification
   await test('the seven §4.4 queries match BACKEND_SETUP.md', async () => {
     const doc = await readFile(path.join(root, 'BACKEND_SETUP.md'), 'utf8')
@@ -466,6 +497,60 @@ async function main() {
       [orgA.user_id],
     )
     assert.equal(orgs.n, 1)
+  })
+
+  await test('bootstrap_account preserves an assigned role and creates no second organization', async () => {
+    // The first call is the legitimate provision for this new user.
+    const user = (await many(`select * from public.bootstrap_account('uid-keep', 'keep@example.test', 'Keep')`))[0]
+    const provisioned = await one(`select count(*)::int as n from public.organizations`)
+
+    // A role an operator has already assigned must survive later sign-ins.
+    await client.query(`update public.organization_members set role = 'viewer' where user_id = $1`, [
+      user.user_id,
+    ])
+
+    const again = (await many(`select * from public.bootstrap_account('uid-keep', 'keep@example.test', 'Keep')`))[0]
+    assert.equal(again.organization_id, user.organization_id)
+    assert.equal(again.role, 'viewer')
+
+    const counts = await one(
+      `select (select count(*)::int from public.organization_members where user_id = $1) as members,
+              (select count(*)::int from public.organizations) as orgs`,
+      [user.user_id],
+    )
+    assert.equal(counts.members, 1)
+    assert.equal(counts.orgs, provisioned.n, 'a second organization was created')
+  })
+
+  await test('organization_members refuses a duplicate membership', async () => {
+    const user = (await many(`select * from public.bootstrap_account('uid-dup', 'dup@example.test', 'Dup')`))[0]
+    const membership = await one(
+      `select organization_id from public.organization_members where user_id = $1`,
+      [user.user_id],
+    )
+    await assert.rejects(
+      client.query(
+        `insert into public.organization_members (organization_id, user_id, role)
+         values ($1, $2, 'admin')`,
+        [membership.organization_id, user.user_id],
+      ),
+      (error) => error.code === '23505',
+    )
+    const after = await one(`select role from public.organization_members where user_id = $1`, [
+      user.user_id,
+    ])
+    assert.equal(after.role, 'owner', 'a duplicate insert must not change the role')
+  })
+
+  await test('a new user is not added to an existing organization', async () => {
+    const user = (await many(`select * from public.bootstrap_account('uid-solo', 'solo@example.test', 'Solo')`))[0]
+    assert.notEqual(user.organization_id, orgA.organization_id)
+    const members = await many(
+      `select user_id from public.organization_members where organization_id = $1`,
+      [orgA.organization_id],
+    )
+    assert.equal(members.length, 1)
+    assert.equal(members[0].user_id, orgA.user_id)
   })
 
   await test('bootstrap_account survives two concurrent first sign-ins', async () => {

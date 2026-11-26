@@ -103,6 +103,14 @@ export type SessionResponse = {
   organizations: Array<{ id: string; name: string; role: string }>
 }
 
+export type OrgStatsResponse = {
+  organization: { id: string; name: string; role: string }
+  /** Aggregated counts only — never member identities. */
+  users: { total: number; newLast7Days: number; newLast30Days: number }
+  /** Platform-wide total, and only for a platform administrator. */
+  organizations: { total: number } | null
+}
+
 export type Paginated<T> = {
   data: T[]
   pagination: { limit: number; offset: number; returned: number; hasMore: boolean }
@@ -122,6 +130,8 @@ export const api = {
     request<{ status: string; checks: ApiRecord }>('GET', '/api/health'),
 
   session: () => request<SessionResponse>('POST', '/api/auth/session'),
+
+  stats: () => request<OrgStatsResponse>('GET', '/api/stats'),
 
   customers: {
     list: (query?: { limit?: number; offset?: number }) =>

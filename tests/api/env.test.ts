@@ -6,6 +6,7 @@ import {
   isDatabaseConfigured,
   isFirebaseAdminConfigured,
   paymentCredentials,
+  platformAdminUids,
   resolveAiConfig,
   supabaseConfigStatus,
   supabaseUrl,
@@ -20,6 +21,7 @@ const ENV_KEYS = [
   'FIREBASE_PROJECT_ID',
   'VITE_FIREBASE_PROJECT_ID',
   'ALLOWED_ORIGINS',
+  'PLATFORM_ADMIN_UIDS',
   'APP_URL',
   'VITE_APP_URL',
   'AI_PROVIDER',
@@ -116,6 +118,24 @@ test('the server project id prefers FIREBASE_PROJECT_ID over the public variable
 
   setEnv({ VITE_FIREBASE_PROJECT_ID: 'browser-project' })
   assert.equal(firebaseProjectId(), 'browser-project')
+})
+
+test('the platform admin allowlist trims entries and drops empty ones', () => {
+  setEnv({})
+  assert.deepEqual(platformAdminUids(), [])
+
+  setEnv({ PLATFORM_ADMIN_UIDS: '   ' })
+  assert.deepEqual(platformAdminUids(), [])
+
+  setEnv({ PLATFORM_ADMIN_UIDS: ' ,  , , ' })
+  assert.deepEqual(platformAdminUids(), [])
+
+  setEnv({ PLATFORM_ADMIN_UIDS: ' uid-a , , uid-b ,, ' })
+  assert.deepEqual(platformAdminUids(), ['uid-a', 'uid-b'])
+
+  // The `.env.example` placeholder is not an administrator.
+  setEnv({ PLATFORM_ADMIN_UIDS: 'your-firebase-uid' })
+  assert.deepEqual(platformAdminUids(), [])
 })
 
 test('CORS origins come from ALLOWED_ORIGINS, then APP_URL', () => {

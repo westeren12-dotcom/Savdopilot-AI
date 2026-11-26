@@ -13,6 +13,7 @@ import {
   type User,
 } from 'firebase/auth'
 import { getFirebaseAuth, googleProvider } from '@/lib/firebase'
+import { api } from '@/lib/api-client'
 import { stashPendingProduct, type ProductType } from '@/lib/product-context'
 import { actions, getState, subscribe } from '@/store/app-store'
 import { env } from '@/config/env'
@@ -27,6 +28,21 @@ const DEMO_ACCOUNTS: Record<string, string> = {
 
 export function isFirebaseReady(): boolean {
   return getFirebaseAuth() !== null
+}
+
+/**
+ * Server-side provisioning: the first authenticated call creates the Firebase
+ * user's organization and owner membership (`bootstrap_account`, idempotent).
+ *
+ * It never blocks or fails sign-in: the same bootstrap runs again on the first
+ * data request, so a transient API error must not look like a login failure.
+ * Demo mode has no backend, so nothing is sent.
+ */
+function syncServerSession(): void {
+  if (env.useDemoMode || !env.isFirebaseConfigured) return
+  void api.session().catch(() => {
+    /* retried by the first data request */
+  })
 }
 
 /** True when Firebase env vars are absent (or still placeholder values). */
@@ -133,7 +149,9 @@ export async function signUpWithEmail(
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password)
     if (fullName) await updateProfile(cred.user, { displayName: fullName })
-    return toAuthUser(cred.user)
+    const user = toAuthUser(cred.user)
+    syncServerSession()
+    return user
   } catch (err) {
     const code = (err as { code?: string }).code ?? ''
     throw new AuthError(mapAuthError(code))
@@ -147,6 +165,7 @@ export async function signInWithEmail(email: string, password: string): Promise<
   }
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password)
+    syncServerSession()
     return toAuthUser(cred.user)
   } catch (err) {
     const code = (err as { code?: string }).code ?? ''
@@ -165,6 +184,7 @@ export async function signInWithGoogle(product: ProductType | null): Promise<Aut
   }
   try {
     const cred = await signInWithPopup(auth, googleProvider())
+    syncServerSession()
     return toAuthUser(cred.user)
   } catch (err) {
     const code = (err as { code?: string }).code ?? ''
